@@ -1,0 +1,20 @@
+.app-bar {
+  background: linear-gradient(to right, #4a752c, rgb(208, 245, 180));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.app-title {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.nav-button {
+  margin-left: 10px;
+  color: white;
+  text-transform: none;
+}
+
+.nav-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
