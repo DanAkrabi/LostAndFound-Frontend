@@ -1,10 +1,18 @@
-import "./App.css";
+// App.tsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-import AppBar from "./components/AppBar";
+import HomePage from "./pages/HomePage"; // Make sure this exists
 
 function App() {
-  return <AppBar />;
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="*" element={<div>❌Page Not Found❌</div>} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

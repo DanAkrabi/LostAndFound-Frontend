@@ -1,0 +1,61 @@
+/* Main wrapper */
+.homepage {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Header section with icon + title */
+.homepage-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+  color: #2e7d32; /* green tone for "found" theme */
+}
+
+/* Big title */
+.homepage-title {
+  font-weight: 700;
+  font-size: 2rem;
+}
+
+/* Subtitle text */
+.homepage-subtitle {
+  color: #555;
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Optional: content section when you start showing posts or filter buttons */
+.homepage-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Placeholder for post card styling */
+.homepage-post {
+  background-color: #fafafa;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* Example button row (you can use this for filter/add buttons later) */
+.homepage-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+/* Optional: a chip or small label */
+.homepage-chip {
+  background-color: rgba(46, 125, 50, 0.1);
+  color: #2e7d32;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
