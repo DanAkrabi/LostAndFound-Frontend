@@ -1,0 +1,16 @@
+.like-button-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.like-icon {
+  padding: 4px;
+  cursor: pointer;
+}
+
+.like-count {
+  font-size: 0.9rem;
+  color: #666;
+}

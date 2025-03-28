@@ -10,6 +10,8 @@ import {
 import { ArrowBack } from "@mui/icons-material";
 import { postDetails } from "../services/post_api"; // Make sure this path is correct
 import { PostType } from "../@types/postTypes";
+import CommentSection from "../components/CommentSection";
+import LikeButton from "../components/LikeButton"; // Adjust the path if needed
 
 const PostDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -58,6 +60,15 @@ const PostDetails: React.FC = () => {
             <Typography variant="caption" display="block">
               On: {new Date(post.createdAt).toLocaleDateString()}
             </Typography>
+            <LikeButton
+              postId={post._id}
+              initialLiked={post.hasLiked}
+              initialLikeCount={post.likes}
+            />
+            <CommentSection
+              comments={post.comments}
+              addComment={(newComment: string) => console.log(newComment)}
+            />
           </CardContent>
         </Card>
       )}

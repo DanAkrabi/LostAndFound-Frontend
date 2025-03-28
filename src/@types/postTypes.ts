@@ -8,6 +8,10 @@ export interface PostType {
   likes: number;
   imageUrl?: string;
   createdAt: string;
+  location?: string;
+  numOfComments: number;
+  comments: CommentType[];
+  hasLiked: boolean;
 }
 
 // You can also define other related types here, like:

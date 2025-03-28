@@ -6,6 +6,7 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { formatDistanceToNow } from "date-fns";
 import "./Post.css";
+import LikeButton from "./LikeButton"; // Adjust the path if needed
 
 interface PostProps {
   _id: string;
@@ -22,6 +23,7 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({
+  _id,
   title,
   content,
   owner,
@@ -96,14 +98,12 @@ const Post: React.FC<PostProps> = ({
 
         <div className="post-footer">
           <div className="post-actions">
-            <div>
-              {hasLiked ? (
-                <FavoriteIcon color="error" />
-              ) : (
-                <FavoriteBorderIcon />
-              )}
-              <span>{likes}</span>
-            </div>
+            <LikeButton
+              postId={_id}
+              initialLiked={hasLiked}
+              initialLikeCount={likes}
+            />
+
             <div>
               <ChatBubbleOutlineIcon />
               <span>{numOfComments}</span>
