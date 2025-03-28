@@ -1,0 +1,101 @@
+/* General Page Styles */
+.homepage {
+  text-align: center;
+  padding-top: 3rem;
+  width: 100%; /* Ensure it takes full width */
+  max-width: 1200px; /* Max width for content, you can adjust this as needed */
+  margin: 0 auto; /* Center horizontally */
+  background-color: #fff; /* Change according to your design preference */
+}
+
+/* Grid layout for posts */
+.homepage-posts {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  ); /* Responsive grid setup */
+  gap: 20px; /* Space between posts */
+  padding: 20px;
+}
+
+/* Styles for each individual post */
+.homepage-post {
+  background-color: #fafafa;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Image section in post */
+.post-image {
+  width: 100%;
+  display: block;
+  height: auto;
+  aspect-ratio: 1; /* Maintains square aspect ratio */
+  object-fit: cover; /* Ensures the image covers the area without stretching */
+}
+
+/* Content section in post */
+.post-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Post header for avatar and user info */
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Styles for the avatar in post header */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* User name and date */
+.user-info {
+  flex-grow: 1;
+}
+
+/* Typography for title and other text elements */
+.post-title,
+.post-description,
+.post-location {
+  margin: 4px 0;
+}
+
+/* Actions bar with likes and comments icons */
+.post-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+
+/* Like and comment icons */
+.like-icon,
+.comment-icon {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+/* Read more and other interactive elements */
+.chip {
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+/* Subtitle and location styling */
+.post-location {
+  color: gray;
+  font-size: 0.85rem;
+}

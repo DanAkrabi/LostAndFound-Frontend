@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AuthBox from "../components/AuthBox";
-
+import "./LoginPage.css";
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +12,11 @@ const LoginPage: React.FC = () => {
     console.log("Password:", password);
   };
 
-  return <AuthBox />;
+  return (
+    <div className="login-container">
+      <AuthBox />
+    </div>
+  );
 };
 
 export default LoginPage;

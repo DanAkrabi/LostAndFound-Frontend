@@ -1,0 +1,24 @@
+/* LayoutWithMenu.css */
+.layout-with-menu {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* Full height of the viewport */
+  width: 100vw; /* Full width of the viewport */
+}
+
+.layout-content {
+  flex-grow: 1; /* Takes up all available space */
+  overflow-y: auto; /* Allows scrolling */
+  padding-top: 64px; /* Adjust based on your AppMenu's height */
+  background-color: #f4f4f9; /* Light grey background, optional */
+}
+
+/* Ensure body and html are set properly in global styles */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}

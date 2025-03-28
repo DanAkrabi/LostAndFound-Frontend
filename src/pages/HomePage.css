@@ -1,41 +1,202 @@
-/* Main wrapper */
+/* Adjustments to HomePage for responsive and centered content */
+/* .homepage {
+  text-align: center;
+  padding-top: 3rem;
+  width: 100%; Ensures it takes full width
+  max-width: 1200px; Max width for the content
+  margin: 0 auto; Center horizontally
+  background-color: #fff; Optional: change according to your design
+} */
 .homepage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding-top: 2rem;
   padding-bottom: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
+}
+.homepage-header {
+  margin-bottom: 1rem;
+  color: #2e7d32; /* Styling for the header */
 }
 
-/* Header section with icon + title */
+.homepage-title,
+.homepage-subtitle {
+  color: #1976d2; /* Consistent color theme */
+}
+
+.homepage-posts {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  ); /* Responsive grid */
+  gap: 20px;
+  padding: 20px;
+  width: 400px;
+}
+
+/* .homepage-post {
+  background-color: #fafafa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  max-width: 400px; Maximum width for posts
+  margin: auto; Center in grid cell
+} */
+
+.homepage-post {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 1px 7px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px; /* Limiting the width to match Instagram's style */
+  overflow: hidden;
+  margin-bottom: 20px;
+  transition: all 0.3s ease-in-out;
+}
+.homepage-post:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+.post-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1; /* Keeps images square */
+  display: block;
+}
+
+/* Content section within the post */
+.post-content {
+  padding: 15px;
+  text-align: left;
+}
+
+/* Post header where user information is displayed */
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* Title of the post */
+.post-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 8px;
+}
+
+/* Location styling if applicable */
+.post-location {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* Description beneath the image */
+.post-description {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.4;
+}
+
+/* Footer of the post with likes and comments */
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+/* Actions like like button, comment icon */
+.post-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* Styling for interaction icons */
+.like-button,
+.comment-button {
+  cursor: pointer;
+  color: #333;
+  margin-right: 10px;
+}
+/* Styles for buttons and actions */
+.homepage-buttons,
+.homepage-actions {
+  margin: 20px 0;
+}
+
+.homepage-btn {
+  padding: 0.8rem 1.2rem;
+}
+
+/* .homepage {
+  text-align: center;
+  padding-top: 3rem;
+  margin: 0 auto; 
+  padding: 0; 
+  box-sizing: border-box;
+  background-color: green;
+}
+.homepage-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.homepage-title {
+  font-weight: bold;
+  color: #1976d2;
+}
+
+.homepage-subtitle {
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.homepage-buttons {
+  margin-top: 1.5rem;
+}
+
+.homepage-btn {
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+}
+
 .homepage-header {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 1rem;
-  color: #2e7d32; /* green tone for "found" theme */
+  color: #2e7d32; 
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 
-/* Big title */
 .homepage-title {
   font-weight: 700;
   font-size: 2rem;
+  color: #1976d2;
 }
 
-/* Subtitle text */
 .homepage-subtitle {
   color: #555;
   font-size: 1.05rem;
   margin-bottom: 1.5rem;
 }
 
-/* Optional: content section when you start showing posts or filter buttons */
 .homepage-content {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* Placeholder for post card styling */
 .homepage-post {
   background-color: #fafafa;
   padding: 1rem;
@@ -43,14 +204,12 @@
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
 }
 
-/* Example button row (you can use this for filter/add buttons later) */
 .homepage-actions {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
 }
 
-/* Optional: a chip or small label */
 .homepage-chip {
   background-color: rgba(46, 125, 50, 0.1);
   color: #2e7d32;
@@ -59,3 +218,12 @@
   border-radius: 999px;
   font-size: 0.85rem;
 }
+
+.homepage-buttons {
+  margin-top: 1.5rem;
+}
+.homepage-btn {
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+}  */
