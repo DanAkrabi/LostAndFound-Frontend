@@ -1,10 +1,12 @@
 import axios from "axios";
-const API_URL = "https://10.10.246.3";
+
+// user_api.ts
+const API_URL = "http://localhost:3000";
 
 // Assuming a structure for the server's response for an image upload
-interface ImageUploadResponse {
-  url: string;
-}
+// interface ImageUploadResponse {
+//   url: string;
+// }
 
 const uploadImage = async (file: File): Promise<string> => {
   const formData = new FormData();

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Paper, Typography, Box, Avatar, Chip, useTheme } from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { Paper, Typography, Avatar, Chip } from "@mui/material";
+// import FavoriteIcon from "@mui/icons-material/Favorite";
+// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { formatDistanceToNow } from "date-fns";
@@ -35,7 +35,7 @@ const Post: React.FC<PostProps> = ({
   onClick,
   location,
 }) => {
-  const theme = useTheme();
+  // const theme = useTheme();
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [avatarLoading, setAvatarLoading] = useState<boolean>(false);
 

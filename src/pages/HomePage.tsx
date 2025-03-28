@@ -1,16 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Container, Typography, Button, Box } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import "./HomePage.css";
 import Post from "../components/Post"; // ⬅️ Make sure the path is correct!
+import CreatePost from "../components/CreatePost";
+import { Fab } from "@mui/material";
 // import AppMenu from "../components/AppMenu"; // ⬅️ Make sure the path is correct!
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [posts, setPosts] = useState([
+  interface PostType {
+    _id: string;
+    title: string;
+    content: string;
+    owner: string;
+    createdAt: string;
+    likes: number;
+    imageUrl: string;
+    numOfComments: number;
+    hasLiked: boolean;
+    location: string;
+  }
+
+  const [posts, setPosts] = useState<PostType[]>([]);
+  const fakePosts = [
     {
       _id: "1",
       title: "Lost Dog",
@@ -35,8 +53,8 @@ const HomePage: React.FC = () => {
       hasLiked: true,
       location: "Library",
     },
-  ]);
-
+  ];
+  // setPosts(fakePosts);
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
     if (!storedUsername) {
@@ -45,7 +63,33 @@ const HomePage: React.FC = () => {
     } else {
       setUsername(storedUsername);
     }
+
+    // 👇 הוספתי את זה כאן
+    setPosts(fakePosts);
   }, []);
+  const handleCreatePost = (newPost: {
+    title: string;
+    content: string;
+    location?: string;
+    imageUrl?: string;
+  }) => {
+    const fakeId = Math.random().toString(36).substring(7);
+    const fakeCreatedAt = new Date().toISOString();
+    const fullPost = {
+      ...newPost,
+      _id: fakeId,
+      owner: username,
+      createdAt: fakeCreatedAt,
+      likes: 0,
+      numOfComments: 0,
+      hasLiked: false,
+      imageUrl: newPost.imageUrl || "", // Ensure imageUrl is always a string
+      location: newPost.location || "Unknown", // Ensure location is always a string
+    };
+
+    setPosts((prev) => [fullPost, ...prev]);
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -72,6 +116,14 @@ const HomePage: React.FC = () => {
               >
                 Go to Profile
               </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                className="homepage-btn"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Create New Post
+              </Button>
             </Box>
 
             <Box
@@ -88,6 +140,19 @@ const HomePage: React.FC = () => {
             </Box>
           </>
         )}
+        <Fab
+          color="primary"
+          aria-label="add"
+          onClick={() => setIsModalOpen(true)}
+          sx={{ position: "fixed", bottom: 30, right: 30 }}
+        >
+          <AddIcon />
+        </Fab>
+        <CreatePost
+          open={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleCreatePost}
+        />
       </Container>
     </>
   );

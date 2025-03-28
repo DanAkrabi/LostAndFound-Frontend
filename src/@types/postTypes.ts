@@ -13,7 +13,13 @@ export interface PostType {
   comments: CommentType[];
   hasLiked: boolean;
 }
-
+export interface PostData {
+  title: string;
+  content: string;
+  location: string; // Added location property
+  imgUrl: string;
+  owner: string;
+}
 // You can also define other related types here, like:
 export interface CommentType {
   _id: string;

@@ -1,4 +1,3 @@
-// AuthBox.tsx
 import React, { useState } from "react";
 import {
   Box,
@@ -9,117 +8,150 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom"; // 👈 import navigate
+import { useNavigate } from "react-router-dom";
+import { registerUser, loginUser } from "../services/user_api";
 import "./AuthBox.css";
 
 const AuthBox = () => {
-  const [tab, setTab] = useState(0);
+  const [mode, setMode] = useState<"login" | "register">("login");
   const navigate = useNavigate();
 
-  const [formValues, setFormValues] = useState({
+  const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
-  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setTab(newValue);
-    setFormValues({
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    });
+  const handleModeChange = (_: React.SyntheticEvent, newValue: number) => {
+    setMode(newValue === 0 ? "login" : "register");
+    setFormData({ username: "", email: "", password: "", confirmPassword: "" });
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitted:", formValues);
 
-    // 🧪 FOR NOW: Navigate on "Sign In" click
-    if (tab === 0) {
-      navigate("/home");
+    if (mode === "register") {
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      try {
+        await registerUser({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+        });
+
+        alert("Registration successful! Please log in.");
+        setMode("login");
+      } catch (err: any) {
+        alert(err.response?.data || "Registration failed.");
+        console.error("Register error:", err);
+      }
+    }
+
+    if (mode === "login") {
+      try {
+        const res = await loginUser({
+          emailOrUsername: formData.username, // ✅ correct key
+          password: formData.password,
+        });
+
+        localStorage.setItem("accessToken", res.accessToken);
+        localStorage.setItem("refreshToken", res.refreshToken);
+        localStorage.setItem("username", res.username);
+        navigate("/home");
+      } catch (err: any) {
+        alert(err.response?.data || "Login failed.");
+        console.error("Login error:", err);
+      }
     }
   };
 
   return (
     <Box className="auth-container">
       <Paper className="auth-paper">
-        <Box className="auth-header">
-          <Typography variant="h6">Welcome to LostAndFound</Typography>
-        </Box>
+        <Typography variant="h6" align="center" sx={{ mt: 2 }}>
+          Welcome to LostAndFound
+        </Typography>
 
-        <Tabs value={tab} onChange={handleTabChange} centered>
-          <Tab label="Sign In" />
-          <Tab label="Sign Up" />
+        <Tabs
+          value={mode === "login" ? 0 : 1}
+          onChange={handleModeChange}
+          centered
+        >
+          <Tab label="Login" />
+          <Tab label="Register" />
         </Tabs>
 
-        <Box component="form" className="auth-form" onSubmit={handleSubmit}>
-          {tab === 0 ? (
-            <TextField
-              label="Username or Email"
-              name="username"
-              value={formValues.username}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-          ) : (
+        <Box component="form" onSubmit={handleSubmit} sx={{ p: 3 }}>
+          {mode === "register" && (
             <>
               <TextField
                 label="Username"
                 name="username"
-                value={formValues.username}
-                onChange={handleInputChange}
+                value={formData.username}
+                onChange={handleChange}
                 fullWidth
                 margin="normal"
+                required
               />
               <TextField
                 label="Email"
                 name="email"
-                value={formValues.email}
-                onChange={handleInputChange}
+                value={formData.email}
+                onChange={handleChange}
                 fullWidth
                 margin="normal"
+                required
               />
             </>
+          )}
+
+          {mode === "login" && (
+            <TextField
+              label="Username or Email"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+              required
+            />
           )}
 
           <TextField
             label="Password"
             name="password"
             type="password"
-            value={formValues.password}
-            onChange={handleInputChange}
+            value={formData.password}
+            onChange={handleChange}
             fullWidth
             margin="normal"
+            required
           />
 
-          {tab === 1 && (
+          {mode === "register" && (
             <TextField
               label="Confirm Password"
               name="confirmPassword"
               type="password"
-              value={formValues.confirmPassword}
-              onChange={handleInputChange}
+              value={formData.confirmPassword}
+              onChange={handleChange}
               fullWidth
               margin="normal"
+              required
             />
           )}
 
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            className="auth-submit"
-          >
-            {tab === 0 ? "Sign In" : "Sign Up"}
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
+            {mode === "login" ? "Login" : "Register"}
           </Button>
         </Box>
       </Paper>

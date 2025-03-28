@@ -1,13 +1,14 @@
 import axios from "axios";
 import { PostType } from "../@types/postTypes";
 
-const API_URL = "https://10.10.246.3";
+const API_URL = "http://localhost:3000";
 
 interface PostData {
   title: string;
   content: string;
   imgUrl?: string;
   owner: string;
+  location?: string;
 }
 
 interface CommentData {

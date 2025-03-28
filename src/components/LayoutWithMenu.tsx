@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet } from "react-router-dom";
 import AppMenu from "./AppMenu";
 import "./LayoutWithMenu.css"; // Import the CSS file

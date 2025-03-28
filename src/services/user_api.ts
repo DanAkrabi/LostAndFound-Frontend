@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://10.10.246.3"; // Adjust as necessary
+const API_URL = "http://localhost:3000";
 
 interface RegisterData {
   username: string;
@@ -9,8 +9,8 @@ interface RegisterData {
   imgUrl?: string;
 }
 
-interface LoginData {
-  usernameOrEmail: string;
+export interface LoginData {
+  emailOrUsername: string;
   password: string;
 }
 
@@ -18,20 +18,28 @@ interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   username: string;
-  imageUrl: string;
+  imagePath?: string;
 }
 
-interface UpdateUserData {
-  oldUsername: string;
-  newUsername: string;
+interface UserResponse {
+  _id: string;
+  email: string;
+  username: string;
+  imagePath?: string;
 }
 
-// Register a new user
-export const registerUser = async (userData: RegisterData) => {
-  return axios.post(`${API_URL}/auth/register`, userData);
+// REGISTER
+export const registerUser = async (
+  userData: RegisterData
+): Promise<UserResponse> => {
+  const response = await axios.post<UserResponse>(
+    `${API_URL}/auth/register`,
+    userData
+  );
+  return response.data;
 };
 
-// Login user
+// LOGIN
 export const loginUser = async (
   userData: LoginData
 ): Promise<LoginResponse> => {
@@ -39,45 +47,78 @@ export const loginUser = async (
     `${API_URL}/auth/login`,
     userData
   );
-  localStorage.setItem("accessToken", response.data.accessToken);
-  localStorage.setItem("username", response.data.username);
-  localStorage.setItem("imageUrl", response.data.imageUrl);
+  const data = response.data;
+
+  localStorage.setItem("accessToken", data.accessToken);
+  localStorage.setItem("refreshToken", data.refreshToken);
+  localStorage.setItem("username", data.username);
+  localStorage.setItem("imageUrl", data.imagePath || "");
+
+  return data;
+};
+
+// LOGOUT
+export const logoutUser = async (): Promise<void> => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  if (!refreshToken) return;
+
+  await axios.post(`${API_URL}/auth/logout`, { refreshToken });
+  localStorage.clear();
+};
+
+// GET USER DATA
+export const getUserData = async (username: string): Promise<UserResponse> => {
+  const token = localStorage.getItem("accessToken");
+  const response = await axios.get<UserResponse>(
+    `${API_URL}/auth/myuser/${username}`,
+    {
+      headers: { Authorization: "jwt " + token },
+    }
+  );
   return response.data;
 };
 
-// Logout user
-export const logoutUser = async () => {
-  await axios.post(`${API_URL}/auth/logout`, {
-    refreshToken: localStorage.getItem("refreshToken"),
-  });
-  localStorage.clear();
+// UPDATE USER
+export const updateUser = async (
+  oldUsername: string,
+  newUsername: string
+): Promise<UserResponse> => {
+  const token = localStorage.getItem("accessToken");
+  const response = await axios.put<UserResponse>(
+    `${API_URL}/auth/myuser/updateAccount`,
+    { oldUsername, newUsername },
+    { headers: { Authorization: "jwt " + token } }
+  );
+  return response.data;
 };
 
-// Update user profile
-export const updateUser = async (userData: UpdateUserData) => {
-  return axios.put(`${API_URL}/auth/myuser/updateAccount`, userData, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-    },
-  });
-};
-
-// Delete user account
-export const deleteUserAccount = async (username: string) => {
-  await axios.delete(
+// DELETE ACCOUNT
+export const deleteUser = async (
+  username: string
+): Promise<{ message: string }> => {
+  const token = localStorage.getItem("accessToken");
+  const response = await axios.delete<{ message: string }>(
     `${API_URL}/auth/myuser/deleteAccount?username=${username}`,
     {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
+      headers: { Authorization: "jwt " + token },
     }
   );
   localStorage.clear();
+  return response.data;
 };
 
-// Fetch user data
-export const getUserData = async (username: string) => {
-  return axios.get(`${API_URL}/auth/myuser/${username}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+// REFRESH TOKEN (optional auto-refresh helper)
+export const refreshAccessToken = async (): Promise<
+  LoginResponse | undefined
+> => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  if (!refreshToken) return;
+
+  const response = await axios.post<LoginResponse>(`${API_URL}/auth/refresh`, {
+    refreshToken,
   });
+  localStorage.setItem("accessToken", response.data.accessToken);
+  localStorage.setItem("refreshToken", response.data.refreshToken);
+
+  return response.data;
 };

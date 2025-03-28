@@ -1,5 +1,4 @@
 // src/components/AppMenu.tsx
-import React from "react";
 import {
   AppBar,
   Toolbar,
