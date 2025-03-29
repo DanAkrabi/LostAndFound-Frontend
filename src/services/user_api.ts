@@ -52,7 +52,7 @@ export const loginUser = async (
   localStorage.setItem("accessToken", data.accessToken);
   localStorage.setItem("refreshToken", data.refreshToken);
   localStorage.setItem("username", data.username);
-  localStorage.setItem("imageUrl", data.imagePath || "");
+  localStorage.setItem("imagePath", data.imagePath || "");
 
   return data;
 };

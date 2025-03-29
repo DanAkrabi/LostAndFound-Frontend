@@ -12,10 +12,10 @@ interface PostProps {
   _id: string;
   title: string;
   content: string;
-  owner: string;
+  sender: string;
   createdAt: string;
   likes: number;
-  imageUrl: string;
+  imagePath: string;
   numOfComments: number;
   hasLiked: boolean;
   onClick: () => void;
@@ -26,10 +26,10 @@ const Post: React.FC<PostProps> = ({
   _id,
   title,
   content,
-  owner,
+  sender,
   createdAt,
   likes,
-  imageUrl,
+  imagePath,
   numOfComments,
   hasLiked,
   onClick,
@@ -45,7 +45,7 @@ const Post: React.FC<PostProps> = ({
       setAvatarUrl("https://via.placeholder.com/80"); // mock
       setAvatarLoading(false);
     }, 500);
-  }, [owner]);
+  }, [sender]);
 
   const formattedDate = formatDistanceToNow(new Date(createdAt), {
     addSuffix: true,
@@ -59,13 +59,13 @@ const Post: React.FC<PostProps> = ({
       .toUpperCase()
       .slice(0, 2);
 
-  const hasImage = imageUrl && imageUrl.trim() !== "";
+  const hasImage = imagePath && imagePath.trim() !== "";
 
   return (
     <Paper className="post-card" onClick={onClick}>
       {hasImage ? (
         <div className="post-image">
-          <img src={imageUrl} alt={title} loading="lazy" />
+          <img src={imagePath} alt={title} loading="lazy" />
         </div>
       ) : (
         <div className="post-image fallback">
@@ -76,10 +76,10 @@ const Post: React.FC<PostProps> = ({
       <div className="post-content">
         <div className="post-header">
           <Avatar src={!avatarLoading ? avatarUrl : undefined}>
-            {getInitials(owner)}
+            {getInitials(sender)}
           </Avatar>
           <div>
-            <Typography variant="subtitle1">{owner}</Typography>
+            <Typography variant="subtitle1">{sender}</Typography>
             <Typography variant="caption" color="text.secondary">
               {formattedDate}
             </Typography>

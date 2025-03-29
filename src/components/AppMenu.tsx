@@ -17,7 +17,7 @@ const AppMenu = () => {
   // Dummy user data - you can replace this with user data from your authentication context or similar
   const user = {
     name: "John Doe",
-    imageUrl: "", // You can use an actual image URL if available
+    imagePath: "", // You can use an actual image URL if available
   };
 
   const handleNavigate = (path: string) => {
@@ -47,8 +47,8 @@ const AppMenu = () => {
           LostAndFound
         </Typography>
         <Button color="inherit" onClick={() => handleNavigate("/profilePage")}>
-          {user.imageUrl ? (
-            <Avatar src={user.imageUrl} alt={user.name} />
+          {user.imagePath ? (
+            <Avatar src={user.imagePath} alt={user.name} />
           ) : (
             <AccountCircleIcon />
           )}

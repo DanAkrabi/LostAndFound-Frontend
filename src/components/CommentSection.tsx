@@ -27,7 +27,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
         {comments.map((comment, index) => (
           <div key={index} className="comment">
             <p className="comment-content">{comment.content}</p>
-            <span className="comment-author">{comment.owner}</span>
+            <span className="comment-author">{comment.sender}</span>
           </div>
         ))}
       </div>

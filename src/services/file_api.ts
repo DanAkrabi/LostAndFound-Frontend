@@ -29,13 +29,13 @@ const uploadImage = async (file: File): Promise<string> => {
   }
 };
 
-const saveImg = async (imageUrl: string): Promise<string> => {
+const saveImg = async (imagePath: string): Promise<string> => {
   try {
-    const response = await axios.post<{ imageUrl: string }>(
+    const response = await axios.post<{ imagePath: string }>(
       `${API_URL}/auth/myuser/saveImg`,
       {
         username: localStorage.getItem("username"),
-        imageUrl,
+        imagePath,
       },
       {
         headers: {
@@ -44,7 +44,7 @@ const saveImg = async (imageUrl: string): Promise<string> => {
         },
       }
     );
-    return response.data.imageUrl;
+    return response.data.imagePath;
   } catch (error) {
     console.error("Error saving image:", error);
     throw new Error("Failed to save image");
@@ -53,7 +53,7 @@ const saveImg = async (imageUrl: string): Promise<string> => {
 
 const getImg = async (username: string): Promise<string> => {
   try {
-    const response = await axios.get<{ imageUrl: string }>(
+    const response = await axios.get<{ imagePath: string }>(
       `${API_URL}/auth/getImg`,
       {
         params: { username },
@@ -62,7 +62,7 @@ const getImg = async (username: string): Promise<string> => {
         },
       }
     );
-    return response.data.imageUrl;
+    return response.data.imagePath;
   } catch (error) {
     console.error("Error fetching image:", error);
     throw new Error("Failed to fetch image");
