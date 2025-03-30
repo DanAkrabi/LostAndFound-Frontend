@@ -1,3 +1,4 @@
+// src/services/user_api.ts
 import axios from "axios";
 
 const API_URL = "http://localhost:3000";
@@ -28,7 +29,6 @@ interface UserResponse {
   imagePath?: string;
 }
 
-// REGISTER
 export const registerUser = async (
   userData: RegisterData
 ): Promise<UserResponse> => {
@@ -39,7 +39,6 @@ export const registerUser = async (
   return response.data;
 };
 
-// LOGIN
 export const loginUser = async (
   userData: LoginData
 ): Promise<LoginResponse> => {
@@ -57,7 +56,6 @@ export const loginUser = async (
   return data;
 };
 
-// LOGOUT
 export const logoutUser = async (): Promise<void> => {
   const refreshToken = localStorage.getItem("refreshToken");
   if (!refreshToken) return;
@@ -66,7 +64,21 @@ export const logoutUser = async (): Promise<void> => {
   localStorage.clear();
 };
 
-// GET USER DATA
+export const googleSignIn = async (token: string): Promise<LoginResponse> => {
+  const response = await axios.post<LoginResponse>(`${API_URL}/google-login`, {
+    token,
+  });
+
+  const data = response.data;
+
+  localStorage.setItem("accessToken", data.accessToken);
+  localStorage.setItem("refreshToken", data.refreshToken);
+  localStorage.setItem("username", data.username);
+  localStorage.setItem("imagePath", data.imagePath || "");
+
+  return data;
+};
+
 export const getUserData = async (username: string): Promise<UserResponse> => {
   const token = localStorage.getItem("accessToken");
   const response = await axios.get<UserResponse>(
@@ -78,7 +90,6 @@ export const getUserData = async (username: string): Promise<UserResponse> => {
   return response.data;
 };
 
-// UPDATE USER
 export const updateUser = async (
   oldUsername: string,
   newUsername: string
@@ -92,7 +103,6 @@ export const updateUser = async (
   return response.data;
 };
 
-// DELETE ACCOUNT
 export const deleteUser = async (
   username: string
 ): Promise<{ message: string }> => {
@@ -107,7 +117,6 @@ export const deleteUser = async (
   return response.data;
 };
 
-// REFRESH TOKEN (optional auto-refresh helper)
 export const refreshAccessToken = async (): Promise<
   LoginResponse | undefined
 > => {
