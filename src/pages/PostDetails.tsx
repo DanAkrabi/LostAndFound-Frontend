@@ -55,7 +55,7 @@ const PostDetails: React.FC = () => {
               {post.content}
             </Typography>
             <Typography variant="caption" display="block" sx={{ mt: 2 }}>
-              Posted by: {post.owner}
+              Posted by: {post.sender}
             </Typography>
             <Typography variant="caption" display="block">
               On: {new Date(post.createdAt).toLocaleDateString()}

@@ -5,10 +5,9 @@ export const usePagination = <T>(data: T[], itemsPerPage: number) => {
 
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
-  const currentData = data.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const currentData = Array.isArray(data)
+    ? data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    : [];
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= totalPages) {

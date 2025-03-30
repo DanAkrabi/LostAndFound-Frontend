@@ -1,5 +1,5 @@
 import React from "react";
-import "./PagingControls.css";
+// import "./PagingControls.css";
 
 interface Props {
   currentPage: number;

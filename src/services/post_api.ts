@@ -119,20 +119,39 @@ export const postDetails = async (postId: string): Promise<PostType> => {
 //     throw error;
 //   }
 // };
-export const fetchPaginatedPosts = async (page = 1, limit = 6) => {
-  try {
-    const response = await axios.get(
-      `${API_URL}/Posts?page=${page}&limit=${limit}`
-    );
-    console.log("Fetched posts data:", response.data);
+// export const fetchPaginatedPosts = async (page = 1, limit = 6) => {
+//   try {
+//     const response = await axios.get(
+//       `${API_URL}/Posts?page=${page}&limit=${limit}`
+//     );
+//     console.log("Fetched posts data:", response.data);
 
-    return response.data; // חייב להחזיר { posts, currentPage, totalPages } // { posts, currentPage, totalPages }
-  } catch (error) {
-    console.error("Error fetching paginated posts:", error);
-    throw error;
+//     return response.data; // חייב להחזיר { posts, currentPage, totalPages } // { posts, currentPage, totalPages }
+//   } catch (error) {
+//     console.error("Error fetching paginated posts:", error);
+//     throw error;
+//   }
+// };
+
+// services/post_api.ts
+
+// export const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+export const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  const data = await res.json();
+
+  console.log("Fetched data:", data); // Log the fetched data for debugging
+  if (Array.isArray(data)) {
+    return { posts: data }; // Adjust to wrap the array in an object with a `posts` key
   }
-};
 
+  if (!data.posts) {
+    console.warn("⚠️ Unexpected data structure:", data);
+    return { posts: [] }; // Fallback to prevent crashes
+  }
+
+  return data;
+};
 // export const addPost = async (postData: {
 //   title: string;
 //   content: string;
