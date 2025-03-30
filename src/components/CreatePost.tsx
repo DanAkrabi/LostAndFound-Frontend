@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import "./CreatePost.css";
+import { uploadImage } from "../services/file_api"; // Adjust the import path as necessary
 
 interface CreatePostProps {
   open: boolean;
@@ -39,17 +40,30 @@ const CreatePost: React.FC<CreatePostProps> = ({ open, onClose, onSubmit }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
 
-  const handleFile = (file: File) => {
+  // const handleFile = (file: File) => {
+  //   setUploading(true);
+  //   setUploadProgress(30);
+  //   const reader = new FileReader();
+  //   reader.onload = () => {
+  //     setImagePath(reader.result as string);
+  //     setUploading(false);
+  //     setUploadProgress(100);
+  //   };
+  //   reader.readAsDataURL(file);
+  //   setFile(file);
+  // };
+  const handleFile = async (file: File) => {
     setUploading(true);
-    setUploadProgress(30);
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImagePath(reader.result as string);
+    try {
+      const imageUrl = await uploadImage(file, setUploadProgress);
+      setImagePath(imageUrl);
       setUploading(false);
       setUploadProgress(100);
-    };
-    reader.readAsDataURL(file);
-    setFile(file);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      setError("Failed to upload image.");
+      setUploading(false);
+    }
   };
 
   const handleDrop = (e: DragEvent) => {
@@ -73,6 +87,27 @@ const CreatePost: React.FC<CreatePostProps> = ({ open, onClose, onSubmit }) => {
     if (file) handleFile(file);
   };
 
+  // const handleSubmit = async () => {
+  //   if (!title.trim() || !content.trim()) {
+  //     setError("Title and description are required.");
+  //     return;
+  //   }
+
+  //   try {
+  //     await onSubmit({ title, content, location, imagePath });
+  //     setTitle("");
+  //     setContent("");
+  //     setLocation("");
+  //     setImagePath("");
+  //     setFile(null);
+  //     setUploadProgress(0);
+  //     onClose();
+  //   } catch (err) {
+  //     console.error("Post failed:", err);
+  //     setError("Failed to submit post.");
+  //   }
+  // };
+
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) {
       setError("Title and description are required.");
@@ -80,20 +115,31 @@ const CreatePost: React.FC<CreatePostProps> = ({ open, onClose, onSubmit }) => {
     }
 
     try {
-      await onSubmit({ title, content, location, imagePath });
+      if (file) {
+        const imageUrl = await uploadImage(file, setUploadProgress);
+        setImagePath(imageUrl);
+      }
+
+      await onSubmit({
+        title,
+        content,
+        location,
+        imagePath,
+      });
+
+      // Reset the form after successful submission
       setTitle("");
       setContent("");
       setLocation("");
       setImagePath("");
       setFile(null);
       setUploadProgress(0);
-      onClose();
+      onClose(); // Close the dialog after submission
     } catch (err) {
       console.error("Post failed:", err);
       setError("Failed to submit post.");
     }
   };
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle>Create a Post</DialogTitle>

@@ -119,11 +119,70 @@ export const postDetails = async (postId: string): Promise<PostType> => {
 //     throw error;
 //   }
 // };
+export const fetchPaginatedPosts = async (page = 1, limit = 6) => {
+  try {
+    const response = await axios.get(
+      `${API_URL}/Posts?page=${page}&limit=${limit}`
+    );
+    console.log("Fetched posts data:", response.data);
+
+    return response.data; // חייב להחזיר { posts, currentPage, totalPages } // { posts, currentPage, totalPages }
+  } catch (error) {
+    console.error("Error fetching paginated posts:", error);
+    throw error;
+  }
+};
+
+// export const addPost = async (postData: {
+//   title: string;
+//   content: string;
+//   imgUrl?: string;
+//   location?: string;
+//   sender: string;
+// }) => {
+//   try {
+//     console.log("Adding Post - Input Data:", postData);
+
+//     const accessToken = localStorage.getItem("accessToken");
+//     const sender = localStorage.getItem("username") || postData.sender;
+
+//     if (!accessToken) {
+//       throw new Error("Access token not found. Please log in.");
+//     }
+
+//     const responsePostData = {
+//       ...postData,
+//       sender,
+//       imagePath: postData.imgUrl || "",
+//     };
+//     console.log("🚀 Posting to:", `${API_URL}/Posts`);
+//     const response = await axios.post(
+//       `${API_URL}/Posts/create`,
+//       responsePostData,
+//       {
+//         headers: {
+//           Authorization: `jwt ${accessToken}`,
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+
+//     console.log("Post created:", response.data);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Detailed Error adding post:", {
+//       error,
+//       errorResponse: (error as any).response?.data,
+//       errorStatus: (error as any).response?.status,
+//     });
+//     throw error;
+//   }
+// };
 
 export const addPost = async (postData: {
   title: string;
   content: string;
-  imgUrl?: string;
+  imgUrl?: string; // ודא ששם זה משתמש בקונבנציה אחידה עם השרת, אולי תצטרך לשנות ל imagePath
   location?: string;
   sender: string;
 }) => {
@@ -137,14 +196,15 @@ export const addPost = async (postData: {
       throw new Error("Access token not found. Please log in.");
     }
 
+    // ודא שהמידע שאתה שולח כולל את שדה התמונה עם השם הנכון
     const responsePostData = {
       ...postData,
       sender,
-      imgUrl: postData.imgUrl || "",
+      imagePath: postData.imgUrl || "", // שינוי ל imagePath אם זה מה שהשרת מצפה לקבל
     };
-
+    console.log("🚀 Posting to:", `${API_URL}/Posts`);
     const response = await axios.post(
-      `${API_URL}/posts/create`,
+      `${API_URL}/Posts/create`, // ודא שהנתיב נכון ותואם את השרת
       responsePostData,
       {
         headers: {

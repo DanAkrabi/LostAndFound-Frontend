@@ -1,72 +1,73 @@
 import axios from "axios";
+const API_ROOT = "http://localhost:3000";
 
-// user_api.ts
-const API_URL = "http://localhost:3000";
-
-// Assuming a structure for the server's response for an image upload
-// interface ImageUploadResponse {
-//   url: string;
-// }
-
-const uploadImage = async (file: File): Promise<string> => {
+// Function to upload image and track progress
+export const uploadImage = async (
+  imageFile: File,
+  setUploadProgress: (progress: number) => void
+): Promise<string> => {
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("file", imageFile);
+
+  interface UploadHeaders {
+    "Content-Type": string;
+    Authorization: string;
+  }
+
+  interface UploadConfig {
+    headers: UploadHeaders;
+    onUploadProgress: (progressEvent: ProgressEvent) => void;
+  }
+
+  const config: UploadConfig = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `jwt ${localStorage.getItem("accessToken") || ""}`,
+    },
+    onUploadProgress: (progressEvent: ProgressEvent) => {
+      const percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+      setUploadProgress(percentCompleted); // Update the state with the progress
+    },
+  };
 
   try {
-    const response = await axios.post<{ url: string }>(
-      `${API_URL}/file/upload`,
+    const { data } = await axios.post<{ url: string }>(
+      `${API_ROOT}/file/upload`,
       formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
+      config
     );
-    return response.data.url;
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    throw new Error("Failed to upload image");
+    return data.url;
+  } catch (err) {
+    console.error("Image upload failed:", err);
+    throw err;
   }
 };
 
-const saveImg = async (imagePath: string): Promise<string> => {
-  try {
-    const response = await axios.post<{ imagePath: string }>(
-      `${API_URL}/auth/myuser/saveImg`,
-      {
-        username: localStorage.getItem("username"),
-        imagePath,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
-    return response.data.imagePath;
-  } catch (error) {
-    console.error("Error saving image:", error);
-    throw new Error("Failed to save image");
-  }
-};
+// import axios from "axios";
 
-const getImg = async (username: string): Promise<string> => {
-  try {
-    const response = await axios.get<{ imagePath: string }>(
-      `${API_URL}/auth/getImg`,
-      {
-        params: { username },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
-    return response.data.imagePath;
-  } catch (error) {
-    console.error("Error fetching image:", error);
-    throw new Error("Failed to fetch image");
-  }
-};
+// const API_ROOT = "http://localhost:3000";
 
-export { uploadImage, saveImg, getImg };
+// export const uploadImage = async (imageFile: File): Promise<string> => {
+//   const formData = new FormData();
+//   formData.append("file", imageFile);
+
+//   try {
+//     const { data } = await axios.post<{ url: string }>(
+//       `${API_ROOT}/file/upload`,
+//       formData,
+//       {
+//         headers: {
+//           "Content-Type": "multipart/form-data",
+//           Authorization: `jwt ${localStorage.getItem("accessToken") || ""}`,
+//         },
+//       }
+//     );
+
+//     return data.url;
+//   } catch (err) {
+//     console.error("Image upload failed:", err);
+//     throw err;
+//   }
+// };
