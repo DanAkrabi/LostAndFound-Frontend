@@ -77,3 +77,10 @@
   transform: scale(1.02);
   cursor: pointer;
 }
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}

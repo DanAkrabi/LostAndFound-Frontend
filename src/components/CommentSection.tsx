@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { CommentType } from "../@types/postTypes"; // Adjust the import path as necessary
+import { CommentType } from "../@types/postTypes";
 import "./CommentSection.css";
 
 interface CommentSectionProps {
-  comments?: CommentType[]; // הפכנו ל־optional
+  comments?: CommentType[];
   addComment: (newComment: string) => void;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({
-  comments,
+  comments = [],
   addComment,
 }) => {
   const [newComment, setNewComment] = useState("");
@@ -21,13 +21,24 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }
   };
 
+  console.log("🧪 Loaded comments:", comments);
+
   return (
     <div className="comment-section">
       <div className="comments">
-        {(comments ?? []).map((comment, index) => (
+        {comments.map((comment, index) => (
           <div key={index} className="comment">
-            <p className="comment-content">{comment.content}</p>
-            <span className="comment-author">{comment.sender}</span>
+            <img
+              src={comment.senderProfileImage || "/default-avatar.png"}
+              alt={comment.senderUsername || "User"}
+              className="comment-avatar"
+            />
+            <div className="comment-details">
+              <span className="comment-author">
+                {comment.senderUsername || "משתמש לא ידוע"}
+              </span>
+              <p className="comment-content">{comment.content}</p>
+            </div>
           </div>
         ))}
       </div>

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { PostType } from "../@types/postTypes";
-
+import { CommentType } from "../@types/postTypes";
 const API_URL = "http://localhost:3000";
 
 interface PostData {
@@ -179,7 +179,7 @@ export const addPost = async (postData: {
     );
 
     console.log("Post created:", response.data);
-    return response.data;
+    return response.data as CommentType;
   } catch (error) {
     console.error("Detailed Error adding post:", {
       error,
@@ -197,7 +197,7 @@ export const deletePost = async (postId: string) => {
         Authorization: `jwt ${localStorage.getItem("accessToken")}`,
       },
     });
-    return response.data;
+    return response.data as CommentType;
   } catch (error) {
     console.error("Error deleting post:", error);
     throw error;
@@ -211,7 +211,7 @@ export const updatePost = async (postId: string, postData: PostData) => {
         Authorization: `jwt ${localStorage.getItem("accessToken")}`,
       },
     });
-    return response.data;
+    return response.data as CommentType;
   } catch (error) {
     console.error("Error updating post:", error);
     throw error;
@@ -273,21 +273,38 @@ export const getComments = async (postId: string) => {
     const response = await axios.get(
       `${API_URL}/Comments/getCommentsByPostId/${postId}`
     );
-    return response.data;
+    return response.data as CommentType[]; // החזר את התגובה כ־CommentType[]
   } catch (error) {
     console.error("Error fetching comments:", error);
     throw error;
   }
 };
 
-export const addComment = async (commentData: CommentData) => {
+export const addComment = async ({
+  comment,
+  sender,
+  postId,
+}: {
+  comment: string;
+  sender: string;
+  postId: string;
+}) => {
   try {
-    const response = await axios.post(`${API_URL}/Comments`, commentData, {
-      headers: {
-        Authorization: `jwt ${localStorage.getItem("accessToken")}`,
+    const response = await axios.post(
+      `${API_URL}/Comments`, // שליחה לנתיב הקיים
+      {
+        content: comment, // חשוב: לא comment אלא content
+        postId,
+        sender,
       },
-    });
-    return response.data;
+      {
+        headers: {
+          Authorization: `jwt ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    );
+
+    return response.data as CommentType;
   } catch (error) {
     console.error("Error adding comment:", error);
     throw error;

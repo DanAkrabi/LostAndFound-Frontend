@@ -15,10 +15,19 @@ export interface PostType {
 }
 
 // You can also define other related types here, like:
+// export interface CommentType {
+//   _id: string;
+//   postId: string;
+//   sender: string;
+//   content: string;
+//   createdAt: string;
+// }
+
 export interface CommentType {
   _id: string;
   postId: string;
-  sender: string;
+  sender: string; // זה ה־ObjectId
   content: string;
-  createdAt: string;
+  senderUsername: string;
+  senderProfileImage: string;
 }

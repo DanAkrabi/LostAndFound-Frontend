@@ -21,6 +21,8 @@ import { PostType } from "../@types/postTypes";
 import "./ProfilePage.css";
 import "./HomePage.css";
 import { uploadProfileImage } from "../services/file_api";
+import { useNavigate } from "react-router-dom";
+
 const ProfilePage: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -28,6 +30,13 @@ const ProfilePage: React.FC = () => {
   const [userPosts, setUserPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear(); // מנקה הכל – אפשר גם למחוק שדות ספציפיים אם תרצי
+    alert("התנתקת בהצלחה");
+    navigate("/"); // או "/login" תלוי לאן את רוצה לשלוח אותו
+  };
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username") || "";
@@ -150,14 +159,46 @@ const ProfilePage: React.FC = () => {
             {email}
           </Typography>
 
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => setEditDialogOpen(true)}
-            sx={{ mt: 2 }}
-          >
-            ערוך פרופיל
-          </Button>
+          <Box sx={{ textAlign: "center", mb: 3 }}>
+            <Avatar
+              src={profileImage || "/default-avatar.png"}
+              alt={username}
+              sx={{
+                width: 120,
+                height: 120,
+                border: "4px solid #ff4081",
+                margin: "0 auto",
+              }}
+            />
+            <Typography variant="h6" sx={{ mt: 1 }}>
+              {username}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {email}
+            </Typography>
+
+            {/* הכפתורים בעריכה ויציאה */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 2,
+                flexWrap: "wrap",
+                mt: 2,
+              }}
+            >
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => setEditDialogOpen(true)}
+              >
+                ערוך פרופיל
+              </Button>
+              <Button variant="outlined" color="error" onClick={handleLogout}>
+                התנתק
+              </Button>
+            </Box>
+          </Box>
         </Box>
 
         {loading ? (
