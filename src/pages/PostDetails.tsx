@@ -6,10 +6,9 @@ import {
   Typography,
   Button,
   Container,
-  CardMedia,
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
-import { postDetails, addComment, getComments } from "../services/post_api";
+import { postDetails, addComment } from "../services/post_api";
 import { PostType, CommentType } from "../@types/postTypes";
 import CommentSection from "../components/CommentSection";
 import LikeButton from "../components/LikeButton";
@@ -18,12 +17,10 @@ const PostDetails: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<PostType | null>(null);
-  const [comments, setComments] = useState<CommentType[]>([]);
 
   useEffect(() => {
     if (id) {
       fetchPost(id);
-      fetchComments(id);
     }
   }, [id]);
 
@@ -36,14 +33,28 @@ const PostDetails: React.FC = () => {
     }
   };
 
-  const fetchComments = async (postId: string) => {
-    try {
-      const data = await getComments(postId);
-      setComments(data);
-    } catch (error) {
-      console.error("❌ Error fetching comments:", error);
-    }
-  };
+  // const handleAddComment = async (
+  //   newCommentText: string
+  // ): Promise<CommentType> => {
+  //   if (!id) throw new Error("Missing post ID");
+
+  //   const sender = localStorage.getItem("userId") || "anonymous";
+  //   const senderUsername = localStorage.getItem("username") || "משתמש לא ידוע";
+  //   const senderProfileImage =
+  //     localStorage.getItem("profileImage") || "/default-avatar.png";
+
+  //   const newComment = await addComment({
+  //     comment: newCommentText,
+  //     postId: id,
+  //     sender,
+  //   });
+
+  //   return {
+  //     ...newComment,
+  //     senderUsername,
+  //     senderProfileImage,
+  //   };
+  // };
 
   const handleAddComment = async (newCommentText: string) => {
     if (!id) return;
@@ -53,26 +64,17 @@ const PostDetails: React.FC = () => {
     const senderProfileImage =
       localStorage.getItem("profileImage") || "/default-avatar.png";
 
-    try {
-      const newComment = await addComment({
-        comment: newCommentText,
-        postId: id,
-        sender,
-      });
+    const newComment = await addComment({
+      comment: newCommentText,
+      postId: id,
+      sender,
+    });
 
-      const enrichedComment = {
-        ...newComment,
-        senderUsername,
-        senderProfileImage,
-      };
-
-      setComments((prev) => [...prev, enrichedComment]);
-      setPost((prev) =>
-        prev ? { ...prev, numOfComments: prev.numOfComments + 1 } : prev
-      );
-    } catch (error) {
-      console.error("❌ Failed to add comment:", error);
-    }
+    return {
+      ...newComment,
+      senderUsername,
+      senderProfileImage,
+    };
   };
 
   return (
@@ -83,18 +85,15 @@ const PostDetails: React.FC = () => {
         variant="outlined"
         sx={{ mb: 2 }}
       >
-        Return to Feed
+        חזרה לפיד
       </Button>
 
       {post && (
         <Card sx={{ maxWidth: 500, mx: "auto" }}>
           {post.imagePath && (
-            <CardMedia
-              component="img"
-              height="194"
-              image={post.imagePath}
-              alt="Post image"
-            />
+            <div className="post-image-wrapper">
+              <img src={post.imagePath} alt={post.title} />
+            </div>
           )}
           <CardContent>
             <Typography gutterBottom variant="h5">
@@ -110,7 +109,7 @@ const PostDetails: React.FC = () => {
               initialLikeCount={post.likes}
             />
 
-            <CommentSection comments={comments} addComment={handleAddComment} />
+            <CommentSection postId={post._id} addComment={handleAddComment} />
           </CardContent>
         </Card>
       )}

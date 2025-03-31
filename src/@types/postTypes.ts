@@ -30,4 +30,6 @@ export interface CommentType {
   content: string;
   senderUsername: string;
   senderProfileImage: string;
+  addComment: (newCommentText: string) => Promise<void>;
+  comments: CommentType[];
 }

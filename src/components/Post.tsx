@@ -63,6 +63,20 @@ const Post: React.FC<PostProps> = ({
 
   return (
     <Paper className="post-card" onClick={onClick}>
+      {/* פרופיל + שם */}
+      <div className="post-header">
+        <Avatar src={!avatarLoading ? avatarUrl : undefined}>
+          {getInitials(sender)}
+        </Avatar>
+        <div>
+          <Typography variant="subtitle1">{sender}</Typography>
+          <Typography variant="caption" color="text.secondary">
+            {formattedDate}
+          </Typography>
+        </div>
+      </div>
+
+      {/* תמונה של הפוסט */}
       {hasImage ? (
         <div className="post-image">
           <img src={imagePath} alt={title} loading="lazy" />
@@ -73,19 +87,8 @@ const Post: React.FC<PostProps> = ({
         </div>
       )}
 
+      {/* תוכן */}
       <div className="post-content">
-        <div className="post-header">
-          <Avatar src={!avatarLoading ? avatarUrl : undefined}>
-            {getInitials(sender)}
-          </Avatar>
-          <div>
-            <Typography variant="subtitle1">{sender}</Typography>
-            <Typography variant="caption" color="text.secondary">
-              {formattedDate}
-            </Typography>
-          </div>
-        </div>
-
         <Typography variant="h6" className="post-title">
           {title}
         </Typography>

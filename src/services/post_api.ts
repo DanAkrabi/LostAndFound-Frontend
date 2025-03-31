@@ -15,6 +15,19 @@ interface CommentData {
   comment: string;
   sender: string;
 }
+// services/comment_api.ts
+export const commentFetcher = async (url: string) => {
+  const res = await fetch(url);
+  const data = await res.json();
+  console.log("Fetched comments data:", data);
+
+  if (!data.comments) {
+    console.warn("⚠️ Unexpected comment structure:", data);
+    return { comments: [] };
+  }
+
+  return data;
+};
 
 export const getPostsBySender = async (
   username: string
