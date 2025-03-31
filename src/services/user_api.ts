@@ -7,7 +7,14 @@ interface RegisterData {
   username: string;
   email: string;
   password: string;
-  imgUrl?: string;
+  profileImage?: string;
+}
+interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  username: string;
+  profileImage?: string;
+  _id: string; // ✅ הוסיפי את זה
 }
 
 export interface LoginData {
@@ -15,18 +22,11 @@ export interface LoginData {
   password: string;
 }
 
-interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  username: string;
-  imagePath?: string;
-}
-
 interface UserResponse {
   _id: string;
   email: string;
   username: string;
-  imagePath?: string;
+  profileImage?: string;
 }
 
 export const registerUser = async (
@@ -51,7 +51,8 @@ export const loginUser = async (
   localStorage.setItem("accessToken", data.accessToken);
   localStorage.setItem("refreshToken", data.refreshToken);
   localStorage.setItem("username", data.username);
-  localStorage.setItem("imagePath", data.imagePath || "");
+  localStorage.setItem("profileImage", data.profileImage || "");
+  localStorage.setItem("userId", response.data._id);
 
   return data;
 };
@@ -74,7 +75,7 @@ export const googleSignIn = async (token: string): Promise<LoginResponse> => {
   localStorage.setItem("accessToken", data.accessToken);
   localStorage.setItem("refreshToken", data.refreshToken);
   localStorage.setItem("username", data.username);
-  localStorage.setItem("imagePath", data.imagePath || "");
+  localStorage.setItem("profileImage", data.profileImage || "");
 
   return data;
 };
@@ -91,16 +92,37 @@ export const getUserData = async (username: string): Promise<UserResponse> => {
 };
 
 export const updateUser = async (
-  oldUsername: string,
-  newUsername: string
-): Promise<UserResponse> => {
-  const token = localStorage.getItem("accessToken");
-  const response = await axios.put<UserResponse>(
-    `${API_URL}/auth/myuser/updateAccount`,
-    { oldUsername, newUsername },
-    { headers: { Authorization: "jwt " + token } }
-  );
-  return response.data;
+  userId: string,
+  updateData: {
+    username?: string;
+    email?: string;
+    profileImage?: string;
+  }
+) => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      throw new Error("Missing access token. Please login again.");
+    }
+
+    const response = await axios.put(
+      `${API_URL}/auth/users/${userId}`, // ודא שזה הנתיב של עדכון יוזר אצלך בשרת
+      updateData,
+      {
+        headers: {
+          Authorization: `jwt ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("👤 User updated:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error updating user:", error);
+    throw error;
+  }
 };
 
 export const deleteUser = async (

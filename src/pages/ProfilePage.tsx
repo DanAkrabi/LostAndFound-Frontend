@@ -7,28 +7,86 @@ import {
   Button,
   Paper,
   CircularProgress,
+  IconButton,
 } from "@mui/material";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { getPostsBySender } from "../services/post_api";
+import { updateUser } from "../services/user_api";
 import Post from "../components/Post";
 import { PostType } from "../@types/postTypes";
-import "./ProfilePage.css"; // אם יש דברים כלליים שם
-import "./HomePage.css"; // כדי לייבא את הסגנון של הפוסטים
+import "./ProfilePage.css";
+import "./HomePage.css";
 
 const ProfilePage: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [imagePath, setImagePath] = useState<string>("");
+  const [profileImage, setProfileImage] = useState<string>("");
   const [userPosts, setUserPosts] = useState<PostType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const handleUpdate = async () => {
+    const userId = localStorage.getItem("userId");
+    const oldUsername = localStorage.getItem("username");
+    const oldEmail = localStorage.getItem("email");
+    const oldImagePath = localStorage.getItem("profileImage");
+
+    if (!userId) {
+      alert("משתמש לא מזוהה");
+      return;
+    }
+
+    const updates: {
+      username?: string;
+      email?: string;
+      profileImage?: string;
+    } = {};
+
+    if (username !== oldUsername) {
+      updates.username = username;
+    }
+
+    if (email !== oldEmail) {
+      updates.email = email;
+    }
+
+    if (profileImage !== oldImagePath) {
+      updates.profileImage = profileImage;
+    }
+
+    if (Object.keys(updates).length === 0) {
+      alert("לא בוצעו שינויים בפרופיל");
+      return;
+    }
+
+    try {
+      const updatedUser = (await updateUser(userId, updates)) as {
+        username: string;
+        email: string;
+        profileImage: string;
+      };
+
+      // עדכון הלוקאל סטורג'
+      if (updates.username)
+        localStorage.setItem("username", updatedUser.username);
+      if (updates.email) localStorage.setItem("email", updatedUser.email);
+      if (updates.profileImage)
+        localStorage.setItem("profileImage", updatedUser.profileImage);
+
+      alert("הפרופיל עודכן בהצלחה!");
+    } catch (error) {
+      console.error("שגיאה בעדכון פרופיל:", error);
+      alert("אירעה שגיאה בעדכון הפרופיל.");
+    }
+  };
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username") || "";
     const storedEmail = localStorage.getItem("email") || "";
-    const storedImage = localStorage.getItem("imagePath") || "";
+    const storedImage = localStorage.getItem("profileImage") || "";
 
     setUsername(storedUsername);
     setEmail(storedEmail);
-    setImagePath(storedImage);
+    setProfileImage(storedImage);
 
     if (storedUsername) {
       fetchUserPosts(storedUsername);
@@ -38,13 +96,18 @@ const ProfilePage: React.FC = () => {
   const fetchUserPosts = async (username: string) => {
     try {
       const posts = await getPostsBySender(username);
-      setUserPosts(
-        posts.map((post) => ({
-          ...post,
-          imagePath: post.imagePath ?? "",
-          location: post.location ?? "לא צוינה מיקום",
-        }))
-      );
+      if (Array.isArray(posts)) {
+        setUserPosts(
+          posts.map((post) => ({
+            ...post,
+            imagePath: post.imagePath ?? "",
+            location: post.location ?? "לא צוינה מיקום",
+          }))
+        );
+      } else {
+        console.error("Expected posts to be an array, but got:", posts);
+        setUserPosts([]);
+      }
     } catch (error) {
       console.error("שגיאה בטעינת הפוסטים של המשתמש:", error);
     } finally {
@@ -52,9 +115,28 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const handleUpdate = () => {
-    alert("פונקציונליות העדכון טרם יושמה.");
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const previewUrl = URL.createObjectURL(file);
+    setProfileImage(previewUrl);
+    localStorage.setItem("profileImage", previewUrl);
   };
+
+  // const handleUpdate = async () => {
+  //   const oldUsername = localStorage.getItem("username");
+  //   if (!oldUsername) return;
+
+  //   try {
+  //     const updatedUser = await updateUser(oldUsername, username);
+  //     localStorage.setItem("username", updatedUser.username);
+  //     alert("הפרופיל עודכן בהצלחה!");
+  //   } catch (error) {
+  //     console.error("שגיאה בעדכון פרופיל:", error);
+  //     alert("אירעה שגיאה בעדכון הפרופיל.");
+  //   }
+  // };
 
   return (
     <Box className="profile-page">
@@ -63,12 +145,40 @@ const ProfilePage: React.FC = () => {
           פרופיל משתמש
         </Typography>
 
-        <Box className="profile-avatar-section">
+        {/* Profile Image + Upload Button */}
+        <Box sx={{ position: "relative", display: "inline-block", mb: 2 }}>
           <Avatar
-            src={imagePath || "/default-avatar.png"}
+            src={profileImage || "/default-avatar.png"}
             alt={username}
-            sx={{ width: 100, height: 100, mb: 2 }}
+            sx={{
+              width: 120,
+              height: 120,
+              border: "4px solid #ff4081", // צבע ורוד בסגנון אינסטגרם
+              margin: "0 auto",
+            }}
           />
+          <input
+            accept="image/*"
+            id="upload-photo"
+            type="file"
+            hidden
+            onChange={handleImageChange}
+          />
+          <label htmlFor="upload-photo">
+            <IconButton
+              color="primary"
+              component="span"
+              sx={{
+                position: "absolute",
+                bottom: -10,
+                right: -10,
+                backgroundColor: "white",
+                border: "1px solid lightgray",
+              }}
+            >
+              <PhotoCamera />
+            </IconButton>
+          </label>
         </Box>
 
         <TextField
@@ -107,14 +217,25 @@ const ProfilePage: React.FC = () => {
             <Typography variant="h6" sx={{ mt: 4 }}>
               הפוסטים שלי
             </Typography>
-            <Box className="homepage-posts" style={{ marginTop: "20px" }}>
+            {/* <Box className="homepage-posts" style={{ marginTop: "20px" }}>
               {userPosts.map((post) => (
                 <Post
                   key={post._id}
                   {...post}
-                  imagePath={post.imagePath || ""}
+                  profileImage={post.imagePath || ""}
                   onClick={() => console.log("נלחץ על הפוסט:", post._id)}
                 />
+              ))}
+            </Box> */}
+            <Box className="instagram-grid">
+              {userPosts.map((post) => (
+                <Box key={post._id} className="instagram-post-wrapper">
+                  <Post
+                    {...post}
+                    imagePath={post.imagePath || ""}
+                    onClick={() => console.log("נלחץ על הפוסט:", post._id)}
+                  />
+                </Box>
               ))}
             </Box>
           </>

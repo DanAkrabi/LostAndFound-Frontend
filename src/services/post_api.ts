@@ -6,7 +6,7 @@ const API_URL = "http://localhost:3000";
 interface PostData {
   title: string;
   content: string;
-  imgUrl?: string;
+  imagePath?: string;
   sender: string;
   location?: string;
 }
@@ -20,15 +20,21 @@ export const getPostsBySender = async (
   username: string
 ): Promise<PostType[]> => {
   try {
-    const response = await axios.get<PostType[]>(
-      `${API_URL}/posts?sender=${username}`
+    const response = await axios.get<{ posts: PostType[] }>(
+      `${API_URL}/Posts?sender=${username}`
     );
+
+    if (!Array.isArray(response.data.posts)) {
+      throw new Error("Expected posts to be an array");
+    }
+
+    return response.data.posts;
 
     // ✅ הדפסה לדיבוג
     console.log("📦 Posts received for sender:", username);
     console.log(response.data);
 
-    return response.data;
+    return response.data.posts;
   } catch (error) {
     console.error("Error fetching posts by sender:", error);
     throw error;
@@ -201,7 +207,7 @@ export const fetcher = async (url: string) => {
 export const addPost = async (postData: {
   title: string;
   content: string;
-  imgUrl?: string; // ודא ששם זה משתמש בקונבנציה אחידה עם השרת, אולי תצטרך לשנות ל imagePath
+  imagePath?: string; // ודא ששם זה משתמש בקונבנציה אחידה עם השרת, אולי תצטרך לשנות ל imagePath
   location?: string;
   sender: string;
 }) => {
@@ -219,7 +225,7 @@ export const addPost = async (postData: {
     const responsePostData = {
       ...postData,
       sender,
-      imagePath: postData.imgUrl || "", // שינוי ל imagePath אם זה מה שהשרת מצפה לקבל
+      imagePath: postData.imagePath || "", // שינוי ל imagePath אם זה מה שהשרת מצפה לקבל
     };
     console.log("🚀 Posting to:", `${API_URL}/Posts`);
     const response = await axios.post(

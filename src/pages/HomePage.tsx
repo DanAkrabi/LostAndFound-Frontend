@@ -69,7 +69,7 @@ const HomePage: React.FC = () => {
       content: newPost.content,
       location: newPost.location,
       sender,
-      imgUrl: newPost.imagePath,
+      imagePath: newPost.imagePath,
     });
     setIsModalOpen(false);
   };
