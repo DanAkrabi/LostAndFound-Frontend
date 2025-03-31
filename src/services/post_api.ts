@@ -42,74 +42,13 @@ export const getPostsBySender = async (
 };
 
 export const postDetails = async (postId: string): Promise<PostType> => {
-  const mockPosts = [
-    {
-      _id: "1",
-      title: "Lost Dog",
-      content: "Black Labrador found near the park.",
-      sender: "eden123",
-      createdAt: new Date().toISOString(),
-      likes: 5,
-      imagePath: "../images/1.png",
-      comments: [],
-      numOfComments: 0,
-      hasLiked: false,
-    },
-    {
-      _id: "2",
-      title: "Lost Keys",
-      content: "Set of car keys with red keychain.",
-      sender: "johndoe",
-      createdAt: new Date().toISOString(),
-      likes: 3,
-      imagePath: "../images/2.png",
-      comments: [
-        {
-          _id: "c1",
-          text: "dsa",
-          content: "Comment content 1",
-          postId: "2",
-          sender: "user1",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: "c2",
-          text: "dsa",
-          content: "Comment content 2",
-          postId: "2",
-          sender: "user2",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: "c3",
-          text: "dsa",
-          content: "Comment content 3",
-          postId: "2",
-          sender: "user3",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: "c4",
-          text: "dsam",
-          content: "Comment content 4",
-          postId: "2",
-          sender: "user4",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: "c5",
-          text: "123",
-          content: "Commentsad content 5",
-          postId: "2",
-          sender: "user5",
-          createdAt: new Date().toISOString(),
-        },
-      ],
-      numOfComments: 5,
-      hasLiked: false,
-    },
-  ];
-  return mockPosts.find((p) => p._id === postId)!;
+  try {
+    const res = await axios.get(`${API_URL}/Posts/${postId}`);
+    return res.data as PostType;
+  } catch (error) {
+    console.error("❌ Error fetching post details:", error);
+    throw error;
+  }
 };
 
 // export const addPost = async (postData: PostData) => {

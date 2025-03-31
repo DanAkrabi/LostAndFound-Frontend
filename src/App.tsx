@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />{" "}
+        <Route path="/" element={<LoginPage />} />
         {/* Login page might not need the layout */}
         <Route path="/" element={<LayoutWithMenu />}>
           {/* Nested routes here will have the AppMenu */}

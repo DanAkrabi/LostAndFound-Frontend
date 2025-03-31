@@ -2,6 +2,44 @@ import axios from "axios";
 const API_ROOT = "http://localhost:3000";
 
 // Function to upload image and track progress
+export const uploadProfileImage = async (
+  file: File,
+  onProgress?: (progress: number) => void
+): Promise<string> => {
+  const formData = new FormData();
+  formData.append("image", file); // חשוב: "image" תואם ל־upload.single("image")
+
+  interface UploadProfileHeaders {
+    "Content-Type": string;
+    Authorization: string | null;
+  }
+
+  interface UploadProfileConfig {
+    headers: UploadProfileHeaders;
+    onUploadProgress: (progressEvent: ProgressEvent) => void;
+  }
+
+  const res = await axios.post<{ imageUrl: string }>(
+    `${API_ROOT}/file/uploadProfileImage`, // ✅ זה הנתיב הנכון!
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: "jwt " + localStorage.getItem("accessToken"), // אם יש
+      } as UploadProfileHeaders,
+      onUploadProgress: (progressEvent: ProgressEvent) => {
+        if (onProgress) {
+          const percent = Math.round(
+            (progressEvent.loaded * 100) / (progressEvent.total || 1)
+          );
+          onProgress(percent);
+        }
+      },
+    } as UploadProfileConfig
+  );
+
+  return res.data.imageUrl;
+};
 export const uploadImage = async (
   imageFile: File,
   setUploadProgress: (progress: number) => void

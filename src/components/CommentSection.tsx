@@ -3,7 +3,7 @@ import { CommentType } from "../@types/postTypes"; // Adjust the import path as 
 import "./CommentSection.css";
 
 interface CommentSectionProps {
-  comments: CommentType[];
+  comments?: CommentType[]; // הפכנו ל־optional
   addComment: (newComment: string) => void;
 }
 
@@ -24,13 +24,14 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   return (
     <div className="comment-section">
       <div className="comments">
-        {comments.map((comment, index) => (
+        {(comments ?? []).map((comment, index) => (
           <div key={index} className="comment">
             <p className="comment-content">{comment.content}</p>
             <span className="comment-author">{comment.sender}</span>
           </div>
         ))}
       </div>
+
       <form onSubmit={handleSubmit} className="comment-form">
         <input
           type="text"
