@@ -76,6 +76,7 @@ export const googleSignIn = async (token: string): Promise<LoginResponse> => {
   localStorage.setItem("refreshToken", data.refreshToken);
   localStorage.setItem("username", data.username);
   localStorage.setItem("profileImage", data.profileImage || "");
+  localStorage.setItem("userId", data._id || "");
 
   return data;
 };

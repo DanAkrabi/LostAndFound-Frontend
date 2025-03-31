@@ -16,7 +16,6 @@ import {
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { updateUser } from "../services/user_api";
 import Post from "../components/Post";
-import { PostType } from "../@types/postTypes";
 import "./ProfilePage.css";
 import "./HomePage.css";
 import { uploadProfileImage } from "../services/file_api";
@@ -31,7 +30,13 @@ const ProfilePage: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string>("");
+
   const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
+  const [formUsername, setFormUsername] = useState<string>("");
+  const [formEmail, setFormEmail] = useState<string>("");
+  const [formProfileImage, setFormProfileImage] = useState<string>("");
+
+  const [refreshKey, setRefreshKey] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,6 +47,10 @@ const ProfilePage: React.FC = () => {
     setUsername(storedUsername);
     setEmail(storedEmail);
     setProfileImage(storedImage);
+
+    setFormUsername(storedUsername);
+    setFormEmail(storedEmail);
+    setFormProfileImage(storedImage);
   }, []);
 
   const {
@@ -50,7 +59,7 @@ const ProfilePage: React.FC = () => {
     isValidating,
   } = usePaging(
     (page) =>
-      `${API_URL}/Posts?sender=${username}&page=${page}&limit=${PAGE_SIZE}`,
+      `${API_URL}/Posts?sender=${username}&page=${page}&limit=${PAGE_SIZE}&refresh=${refreshKey}`,
     fetcher,
     (page) => page.posts,
     PAGE_SIZE
@@ -68,7 +77,7 @@ const ProfilePage: React.FC = () => {
 
     try {
       const uploadedUrl = await uploadProfileImage(file);
-      setProfileImage(uploadedUrl);
+      setFormProfileImage(uploadedUrl);
     } catch (err) {
       console.error("שגיאה בהעלאת תמונה:", err);
       alert("העלאת התמונה נכשלה");
@@ -92,9 +101,10 @@ const ProfilePage: React.FC = () => {
       profileImage?: string;
     } = {};
 
-    if (username !== oldUsername) updates.username = username;
-    if (email !== oldEmail) updates.email = email;
-    if (profileImage !== oldImagePath) updates.profileImage = profileImage;
+    if (formUsername !== oldUsername) updates.username = formUsername;
+    if (formEmail !== oldEmail) updates.email = formEmail;
+    if (formProfileImage !== oldImagePath)
+      updates.profileImage = formProfileImage;
 
     if (Object.keys(updates).length === 0) {
       alert("לא בוצעו שינויים בפרופיל");
@@ -108,14 +118,25 @@ const ProfilePage: React.FC = () => {
         profileImage: string;
       };
 
-      if (updates.username)
+      // עדכון בלוקל סטורג'
+      if (updates.username) {
         localStorage.setItem("username", updatedUser.username);
-      if (updates.email) localStorage.setItem("email", updatedUser.email);
-      if (updates.profileImage)
+        setUsername(updatedUser.username);
+      }
+      if (updates.email) {
+        localStorage.setItem("email", updatedUser.email);
+        setEmail(updatedUser.email);
+      }
+      if (updates.profileImage) {
         localStorage.setItem("profileImage", updatedUser.profileImage);
+        setProfileImage(updatedUser.profileImage);
+      }
+
+      // סגירת הדיאלוג וריענון רשימת הפוסטים
+      setEditDialogOpen(false);
+      setRefreshKey((prev) => prev + 1);
 
       alert("הפרופיל עודכן בהצלחה!");
-      setEditDialogOpen(false);
     } catch (error) {
       console.error("שגיאה בעדכון פרופיל:", error);
       alert("אירעה שגיאה בעדכון הפרופיל.");
@@ -184,7 +205,7 @@ const ProfilePage: React.FC = () => {
                     <Post
                       {...post}
                       imagePath={post.imagePath || ""}
-                      onClick={() => console.log("נלחץ על הפוסט:", post._id)}
+                      onClick={() => navigate(`/post/${post._id}`)}
                     />
                   </Box>
                 );
@@ -203,8 +224,8 @@ const ProfilePage: React.FC = () => {
         <DialogContent>
           <Box sx={{ textAlign: "center" }}>
             <Avatar
-              src={profileImage || "/default-avatar.png"}
-              alt={username}
+              src={formProfileImage || "/default-avatar.png"}
+              alt={formUsername}
               sx={{
                 width: 100,
                 height: 100,
@@ -229,15 +250,15 @@ const ProfilePage: React.FC = () => {
           <TextField
             fullWidth
             label="שם משתמש"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={formUsername}
+            onChange={(e) => setFormUsername(e.target.value)}
             margin="normal"
           />
           <TextField
             fullWidth
             label="אימייל"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formEmail}
+            onChange={(e) => setFormEmail(e.target.value)}
             margin="normal"
           />
         </DialogContent>
@@ -254,7 +275,7 @@ const ProfilePage: React.FC = () => {
 
 export default ProfilePage;
 
-// import React, { useState, useEffect } from "react";
+// import React, { useEffect, useState } from "react";
 // import {
 //   Box,
 //   Typography,
@@ -270,7 +291,6 @@ export default ProfilePage;
 //   Paper,
 // } from "@mui/material";
 // import PhotoCamera from "@mui/icons-material/PhotoCamera";
-// import { getPostsBySender } from "../services/post_api";
 // import { updateUser } from "../services/user_api";
 // import Post from "../components/Post";
 // import { PostType } from "../@types/postTypes";
@@ -278,21 +298,18 @@ export default ProfilePage;
 // import "./HomePage.css";
 // import { uploadProfileImage } from "../services/file_api";
 // import { useNavigate } from "react-router-dom";
+// import { fetcher } from "../services/post_api";
+// import { usePaging } from "../useHooks/usePaging";
+
+// const PAGE_SIZE = 6;
+// const API_URL = "http://localhost:3000";
 
 // const ProfilePage: React.FC = () => {
 //   const [username, setUsername] = useState<string>("");
 //   const [email, setEmail] = useState<string>("");
 //   const [profileImage, setProfileImage] = useState<string>("");
-//   const [userPosts, setUserPosts] = useState<PostType[]>([]);
-//   const [loading, setLoading] = useState<boolean>(true);
 //   const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
 //   const navigate = useNavigate();
-
-//   const handleLogout = () => {
-//     localStorage.clear();
-//     alert("התנתקת בהצלחה");
-//     navigate("/");
-//   };
 
 //   useEffect(() => {
 //     const storedUsername = localStorage.getItem("username") || "";
@@ -302,29 +319,24 @@ export default ProfilePage;
 //     setUsername(storedUsername);
 //     setEmail(storedEmail);
 //     setProfileImage(storedImage);
-
-//     if (storedUsername) {
-//       fetchUserPosts(storedUsername);
-//     }
 //   }, []);
 
-//   const fetchUserPosts = async (username: string) => {
-//     try {
-//       const posts = await getPostsBySender(username);
-//       if (Array.isArray(posts)) {
-//         setUserPosts(
-//           posts.map((post) => ({
-//             ...post,
-//             imagePath: post.imagePath ?? "",
-//             location: post.location ?? "לא צוינה מיקום",
-//           }))
-//         );
-//       }
-//     } catch (error) {
-//       console.error("שגיאה בטעינת הפוסטים של המשתמש:", error);
-//     } finally {
-//       setLoading(false);
-//     }
+//   const {
+//     items: userPosts,
+//     lastElementRef,
+//     isValidating,
+//   } = usePaging(
+//     (page) =>
+//       `${API_URL}/Posts?sender=${username}&page=${page}&limit=${PAGE_SIZE}`,
+//     fetcher,
+//     (page) => page.posts,
+//     PAGE_SIZE
+//   );
+
+//   const handleLogout = () => {
+//     localStorage.clear();
+//     alert("התנתקת בהצלחה");
+//     navigate("/");
 //   };
 
 //   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -428,7 +440,7 @@ export default ProfilePage;
 //           </Typography>
 //         </Box>
 
-//         {loading ? (
+//         {isValidating && userPosts.length === 0 ? (
 //           <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
 //             <CircularProgress />
 //           </Box>
@@ -438,15 +450,22 @@ export default ProfilePage;
 //               הפוסטים שלי
 //             </Typography>
 //             <Box className="instagram-grid">
-//               {userPosts.map((post) => (
-//                 <Box key={post._id} className="instagram-post-wrapper">
-//                   <Post
-//                     {...post}
-//                     imagePath={post.imagePath || ""}
-//                     onClick={() => console.log("נלחץ על הפוסט:", post._id)}
-//                   />
-//                 </Box>
-//               ))}
+//               {userPosts.map((post, idx) => {
+//                 const isLast = idx === userPosts.length - 1;
+//                 return (
+//                   <Box
+//                     key={post._id}
+//                     className="instagram-post-wrapper"
+//                     ref={isLast ? lastElementRef : null}
+//                   >
+//                     <Post
+//                       {...post}
+//                       imagePath={post.imagePath || ""}
+//                       onClick={() => navigate(`/post/${post._id}`)}
+//                     />
+//                   </Box>
+//                 );
+//               })}
 //             </Box>
 //           </>
 //         ) : (
@@ -456,7 +475,6 @@ export default ProfilePage;
 //         )}
 //       </Paper>
 
-//       {/* דיאלוג עריכת פרופיל */}
 //       <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
 //         <DialogTitle>עריכת פרופיל</DialogTitle>
 //         <DialogContent>

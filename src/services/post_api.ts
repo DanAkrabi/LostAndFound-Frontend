@@ -15,6 +15,7 @@ interface CommentData {
   comment: string;
   sender: string;
 }
+
 // services/comment_api.ts
 export const commentFetcher = async (url: string) => {
   const res = await fetch(url);
@@ -64,36 +65,6 @@ export const postDetails = async (postId: string): Promise<PostType> => {
   }
 };
 
-// export const addPost = async (postData: PostData) => {
-//   try {
-//     const response = await axios.post(`${API_URL}/create`, postData, {
-//       headers: {
-//         Authorization: `jwt ${localStorage.getItem("accessToken")}`,
-//       },
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error adding post:", error);
-//     throw error;
-//   }
-// };
-// export const fetchPaginatedPosts = async (page = 1, limit = 6) => {
-//   try {
-//     const response = await axios.get(
-//       `${API_URL}/Posts?page=${page}&limit=${limit}`
-//     );
-//     console.log("Fetched posts data:", response.data);
-
-//     return response.data; // חייב להחזיר { posts, currentPage, totalPages } // { posts, currentPage, totalPages }
-//   } catch (error) {
-//     console.error("Error fetching paginated posts:", error);
-//     throw error;
-//   }
-// };
-
-// services/post_api.ts
-
-// export const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 export const fetcher = async (url: string) => {
   const res = await fetch(url);
   const data = await res.json();
@@ -110,51 +81,6 @@ export const fetcher = async (url: string) => {
 
   return data;
 };
-// export const addPost = async (postData: {
-//   title: string;
-//   content: string;
-//   imgUrl?: string;
-//   location?: string;
-//   sender: string;
-// }) => {
-//   try {
-//     console.log("Adding Post - Input Data:", postData);
-
-//     const accessToken = localStorage.getItem("accessToken");
-//     const sender = localStorage.getItem("username") || postData.sender;
-
-//     if (!accessToken) {
-//       throw new Error("Access token not found. Please log in.");
-//     }
-
-//     const responsePostData = {
-//       ...postData,
-//       sender,
-//       imagePath: postData.imgUrl || "",
-//     };
-//     console.log("🚀 Posting to:", `${API_URL}/Posts`);
-//     const response = await axios.post(
-//       `${API_URL}/Posts/create`,
-//       responsePostData,
-//       {
-//         headers: {
-//           Authorization: `jwt ${accessToken}`,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-
-//     console.log("Post created:", response.data);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Detailed Error adding post:", {
-//       error,
-//       errorResponse: (error as any).response?.data,
-//       errorStatus: (error as any).response?.status,
-//     });
-//     throw error;
-//   }
-// };
 
 export const addPost = async (postData: {
   title: string;
@@ -293,6 +219,37 @@ export const getComments = async (postId: string) => {
   }
 };
 
+// export const addComment = async ({
+//   comment,
+//   sender,
+//   postId,
+// }: {
+//   comment: string;
+//   sender: string;
+//   postId: string;
+// }) => {
+//   try {
+//     const response = await axios.post(
+//       `${API_URL}/Comments`, // שליחה לנתיב הקיים
+//       {
+//         content: comment, // חשוב: לא comment אלא content
+//         postId,
+//         sender,
+//       },
+//       {
+//         headers: {
+//           Authorization: `jwt ${localStorage.getItem("accessToken")}`,
+//         },
+//       }
+//     );
+
+//     return response.data as CommentType;
+//   } catch (error) {
+//     console.error("Error adding comment:", error);
+//     throw error;
+//   }
+// };
+
 export const addComment = async ({
   comment,
   sender,
@@ -303,23 +260,27 @@ export const addComment = async ({
   postId: string;
 }) => {
   try {
+    const token = localStorage.getItem("accessToken");
+    if (!token) throw new Error("No token found");
+
     const response = await axios.post(
-      `${API_URL}/Comments`, // שליחה לנתיב הקיים
+      `${API_URL}/Comments`,
       {
-        content: comment, // חשוב: לא comment אלא content
+        content: comment,
         postId,
         sender,
       },
       {
         headers: {
-          Authorization: `jwt ${localStorage.getItem("accessToken")}`,
+          Authorization: `jwt ${token}`, // ✅ פורמט נכון
+          "Content-Type": "application/json",
         },
       }
     );
 
     return response.data as CommentType;
   } catch (error) {
-    console.error("Error adding comment:", error);
+    console.error("❌ Error adding comment:", error);
     throw error;
   }
 };
