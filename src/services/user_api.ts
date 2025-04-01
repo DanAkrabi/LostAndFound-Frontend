@@ -66,9 +66,12 @@ export const logoutUser = async (): Promise<void> => {
 };
 
 export const googleSignIn = async (token: string): Promise<LoginResponse> => {
-  const response = await axios.post<LoginResponse>(`${API_URL}/google-login`, {
-    token,
-  });
+  const response = await axios.post<LoginResponse>(
+    `${API_URL}/auth/google-login`,
+    {
+      token,
+    }
+  );
 
   const data = response.data;
 

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { IconButton, Typography } from "@mui/material";
-import { ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
-import { addLike, unlike } from "../services/post_api";
-import "./LikeButton.css"; // Add this line
-
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import IconButton from "@mui/material/IconButton";
+import { addLike, removeLike } from "../services/post_api";
 interface LikeButtonProps {
   postId: string;
   initialLiked: boolean;
@@ -15,41 +14,68 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   initialLiked,
   initialLikeCount,
 }) => {
-  const [liked, setLiked] = useState(initialLiked);
-  const [likeCount, setLikeCount] = useState(initialLikeCount);
+  const [liked, setLiked] = useState<boolean>(initialLiked);
+  const [likeCount, setLikeCount] = useState<number>(initialLikeCount);
 
   const handleLikeClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    try {
+      const res = liked ? await removeLike(postId) : await addLike(postId);
 
-    if (liked) {
-      try {
-        await unlike(postId);
-        setLikeCount((prev) => prev - 1);
-        setLiked(false);
-      } catch (error) {
-        console.error("Error removing like:", error);
-      }
-    } else {
-      try {
-        await addLike(postId);
-        setLikeCount((prev) => prev + 1);
-        setLiked(true);
-      } catch (error) {
-        console.error("Error adding like:", error);
-      }
+      setLiked(res.liked);
+      setLikeCount(res.likes);
+    } catch (err) {
+      console.error("Error toggling like:", err);
     }
   };
 
   return (
-    <div className="like-button-container">
-      <IconButton onClick={handleLikeClick} size="small" className="like-icon">
-        {liked ? <ThumbUp color="primary" /> : <ThumbUpOffAlt />}
-      </IconButton>
-      <Typography variant="body2" className="like-count">
-        {likeCount} {likeCount === 1 ? "Like" : "Likes"}
-      </Typography>
-    </div>
+    <IconButton onClick={handleLikeClick} aria-label="like">
+      {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+      <span>{likeCount}</span>
+    </IconButton>
   );
 };
 
 export default LikeButton;
+
+// import React, { useState } from "react";
+// import FavoriteIcon from "@mui/icons-material/Favorite";
+// import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+// import IconButton from "@mui/material/IconButton";
+// import { toggleLike } from "../services/post_api";
+
+// interface LikeButtonProps {
+//   postId: string;
+//   initialLiked: boolean;
+//   initialLikeCount: number;
+// }
+
+// const LikeButton: React.FC<LikeButtonProps> = ({
+//   postId,
+//   initialLiked,
+//   initialLikeCount,
+// }) => {
+//   const [liked, setLiked] = useState<boolean>(initialLiked);
+//   const [likeCount, setLikeCount] = useState<number>(initialLikeCount);
+
+//   const handleLikeClick = async (e: React.MouseEvent) => {
+//     e.stopPropagation();
+//     try {
+//       const res = await toggleLike(postId, liked); // שולחים את המצב הנוכחי
+//       setLiked(res.liked); // מקבלים את המצב החדש מהשרת
+//       setLikeCount(res.likes);
+//     } catch (err) {
+//       console.error("Error toggling like:", err);
+//     }
+//   };
+
+//   return (
+//     <IconButton onClick={handleLikeClick} aria-label="like">
+//       {liked ? <FavoriteIcon color="error" /> : <FavoriteBorderIcon />}
+//       <span>{likeCount}</span>
+//     </IconButton>
+//   );
+// };
+
+// export default LikeButton;

@@ -157,36 +157,115 @@ export const updatePost = async (postId: string, postData: PostData) => {
   }
 };
 
-export const isLiked = async (postId: string) => {
+export const isLiked = async (postId: string): Promise<boolean> => {
+  const token = localStorage.getItem("accessToken");
+
+  if (!token) {
+    console.warn("🔒 No token found, assuming not liked.");
+    return false;
+  }
+
   try {
-    const response = await axios.get(`${API_URL}/posts/isLiked/${postId}`, {
+    const response = await axios.get(`${API_URL}/Posts/isLiked/${postId}`, {
       headers: {
-        Authorization: `jwt ${localStorage.getItem("accessToken")}`,
+        Authorization: `jwt ${token}`,
       },
     });
-    return response.data;
+    return response.data === true;
   } catch (error) {
-    console.error("Error checking like status:", error);
-    throw error;
+    console.error("❌ Error checking like status:", error);
+    return false;
   }
 };
 
+// export const addLike = async (postId: string) => {
+//   try {
+//     const response = await axios.put(
+//       `${API_URL}/posts/like/${postId}`,
+//       {},
+//       {
+//         headers: {
+//           Authorization: `jwt ${localStorage.getItem("accessToken")}`,
+//         },
+//       }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error adding like:", error);
+//     throw error;
+//   }
+// };
+// export const toggleLike = async (postId: string, currentLiked: boolean) => {
+//   try {
+//     const response = await axios.put(
+//       `${API_URL}/Posts/toggle-like/${postId}`,
+//       { liked: currentLiked },
+//       {
+//         headers: {
+//           Authorization: `jwt ${localStorage.getItem("accessToken")}`,
+//         },
+//       }
+//     );
+
+//     return response.data as {
+//       liked: boolean; // המצב החדש
+//       likes: number;
+//     };
+//   } catch (error) {
+//     console.error("Error toggling like:", error);
+//     throw error;
+//   }
+// };
+
+export const toggleLike = async (postId: string, currentLiked: boolean) => {
+  const accessToken = localStorage.getItem("accessToken");
+  console.log("📤 [CLIENT] Sending toggle-like request:", {
+    postId,
+    currentLiked,
+    token: accessToken,
+  });
+
+  const response = await axios.put(
+    `${API_URL}/Posts/toggle-like/${postId}`,
+    { liked: currentLiked },
+    {
+      headers: {
+        Authorization: `jwt ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data as {
+    liked: boolean;
+    likes: number;
+  };
+};
 export const addLike = async (postId: string) => {
-  try {
-    const response = await axios.put(
-      `${API_URL}/posts/like/${postId}`,
-      {},
-      {
-        headers: {
-          Authorization: `jwt ${localStorage.getItem("accessToken")}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Error adding like:", error);
-    throw error;
-  }
+  const token = localStorage.getItem("accessToken");
+  const response = await axios.put(
+    `${API_URL}/Posts/like/${postId}`,
+    {},
+    {
+      headers: {
+        Authorization: `jwt ${token}`,
+      },
+    }
+  );
+  return response.data as { liked: boolean; likes: number };
+};
+
+export const removeLike = async (postId: string) => {
+  const token = localStorage.getItem("accessToken");
+  const response = await axios.put(
+    `${API_URL}/Posts/unlike/${postId}`,
+    {},
+    {
+      headers: {
+        Authorization: `jwt ${token}`,
+      },
+    }
+  );
+  return response.data as { liked: boolean; likes: number };
 };
 
 export const unlike = async (postId: string) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -17,6 +17,17 @@ const PostDetails: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<PostType | null>(null);
+  const location = useLocation();
+
+  const passedState = location.state as {
+    postId: string;
+    hasLiked: boolean;
+    likes: number;
+    numOfComments: number;
+  };
+  const [commentCount, setCommentCount] = useState(
+    passedState?.numOfComments || 0
+  );
 
   useEffect(() => {
     if (id) {
@@ -37,6 +48,7 @@ const PostDetails: React.FC = () => {
     newCommentText: string
   ): Promise<CommentType> => {
     if (!id) throw new Error("Missing post ID");
+    setCommentCount((prev) => prev + 1);
 
     const sender = localStorage.getItem("userId") || "anonymous";
     const senderUsername = localStorage.getItem("username") || "משתמש לא ידוע";
