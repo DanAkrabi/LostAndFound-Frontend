@@ -82,6 +82,52 @@ export const fetcher = async (url: string) => {
   return data;
 };
 
+// export const addPost = async (postData: {
+//   title: string;
+//   content: string;
+//   imagePath?: string; // ודא ששם זה משתמש בקונבנציה אחידה עם השרת, אולי תצטרך לשנות ל imagePath
+//   location?: string;
+//   sender: string;
+// }) => {
+//   try {
+//     console.log("Adding Post - Input Data:", postData);
+
+//     const accessToken = localStorage.getItem("accessToken");
+//     const sender = localStorage.getItem("username") || postData.sender;
+//     const userId = localStorage.getItem("userId") || postData.sender;
+//     if (!accessToken) {
+//       throw new Error("Access token not found. Please log in.");
+//     }
+
+//     // ודא שהמידע שאתה שולח כולל את שדה התמונה עם השם הנכון
+//     const responsePostData = {
+//       ...postData,
+//       sender,
+//       imagePath: postData.imagePath || "", // שינוי ל imagePath אם זה מה שהשרת מצפה לקבל
+//     };
+//     console.log("🚀 Posting to:", `${API_URL}/Posts`);
+//     const response = await axios.post(
+//       `${API_URL}/Posts/create`, // ודא שהנתיב נכון ותואם את השרת
+//       responsePostData,
+//       {
+//         headers: {
+//           Authorization: `jwt ${accessToken}`,
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+
+//     console.log("Post created:", response.data);
+//     return response.data as CommentType;
+//   } catch (error) {
+//     console.error("Detailed Error adding post:", {
+//       error,
+//       errorResponse: (error as any).response?.data,
+//       errorStatus: (error as any).response?.status,
+//     });
+//     throw error;
+//   }
+// };
 export const addPost = async (postData: {
   title: string;
   content: string;
@@ -92,20 +138,26 @@ export const addPost = async (postData: {
   try {
     console.log("Adding Post - Input Data:", postData);
 
+    // שליפת ה־accessToken ו־userId
     const accessToken = localStorage.getItem("accessToken");
     const sender = localStorage.getItem("username") || postData.sender;
+    const userId = localStorage.getItem("userId"); // שליפת ה־userId
 
-    if (!accessToken) {
-      throw new Error("Access token not found. Please log in.");
+    if (!accessToken || !userId) {
+      throw new Error("Access token or userId not found. Please log in.");
     }
 
-    // ודא שהמידע שאתה שולח כולל את שדה התמונה עם השם הנכון
+    // יצירת נתוני הפוסט כולל ה־userId
     const responsePostData = {
       ...postData,
-      sender,
+      sender, // הוספת שם המשתמש
+      userId, // הוספת ה־userId שהושג מ־localStorage
       imagePath: postData.imagePath || "", // שינוי ל imagePath אם זה מה שהשרת מצפה לקבל
     };
+
     console.log("🚀 Posting to:", `${API_URL}/Posts`);
+
+    // שליחת הפוסט לשרת
     const response = await axios.post(
       `${API_URL}/Posts/create`, // ודא שהנתיב נכון ותואם את השרת
       responsePostData,
@@ -118,7 +170,7 @@ export const addPost = async (postData: {
     );
 
     console.log("Post created:", response.data);
-    return response.data as CommentType;
+    return response.data; // מחזיר את הפוסט שנוצר
   } catch (error) {
     console.error("Detailed Error adding post:", {
       error,
@@ -129,6 +181,19 @@ export const addPost = async (postData: {
   }
 };
 
+// export const deletePost = async (postId: string) => {
+//   try {
+//     const response = await axios.delete(`${API_URL}/posts/${postId}`, {
+//       headers: {
+//         Authorization: `jwt ${localStorage.getItem("accessToken")}`,
+//       },
+//     });
+//     return response.data as CommentType;
+//   } catch (error) {
+//     console.error("Error deleting post:", error);
+//     throw error;
+//   }
+// };
 export const deletePost = async (postId: string) => {
   try {
     const response = await axios.delete(`${API_URL}/posts/${postId}`, {
@@ -136,7 +201,7 @@ export const deletePost = async (postId: string) => {
         Authorization: `jwt ${localStorage.getItem("accessToken")}`,
       },
     });
-    return response.data as CommentType;
+    return response.data;
   } catch (error) {
     console.error("Error deleting post:", error);
     throw error;

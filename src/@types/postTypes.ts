@@ -12,6 +12,7 @@ export interface PostType {
   numOfComments: number;
   comments: CommentType[];
   hasLiked: boolean;
+  userId: string; // Added userId property
 }
 
 // You can also define other related types here, like:
