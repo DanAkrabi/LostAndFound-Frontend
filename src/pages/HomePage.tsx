@@ -11,7 +11,7 @@ import { PostType } from "../@types/postTypes";
 import { usePaging } from "../useHooks/usePaging"; // ודאי שהנתיב נכון
 
 const PAGE_SIZE = 6;
-const API_URL = "http://localhost:3000";
+const API_URL = "https://node23.cs.colman.ac.il";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();

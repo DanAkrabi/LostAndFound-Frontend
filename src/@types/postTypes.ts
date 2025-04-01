@@ -13,6 +13,7 @@ export interface PostType {
   comments: CommentType[];
   hasLiked: boolean;
   userId: string; // Added userId property
+  onLikeChange: (newLiked: boolean, newLikeCount: number) => void;
 }
 
 // You can also define other related types here, like:

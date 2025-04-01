@@ -24,7 +24,9 @@ import { fetcher } from "../services/post_api";
 import { usePaging } from "../useHooks/usePaging";
 
 const PAGE_SIZE = 6;
-const API_URL = "http://localhost:3000";
+// const API_URL = "http://localhost:3000";
+
+const API_URL = " https://node23.cs.colman.ac.il";
 
 const ProfilePage: React.FC = () => {
   const [username, setUsername] = useState<string>("");

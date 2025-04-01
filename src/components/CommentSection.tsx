@@ -24,7 +24,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     isValidating,
   } = usePaging(
     (page) =>
-      `http://localhost:3000/Comments/getCommentsByPostId/${postId}?page=${page}&limit=${PAGE_SIZE}`,
+      `https://node23.cs.colman.ac.il/Comments/getCommentsByPostId/${postId}?page=${page}&limit=${PAGE_SIZE}`,
     commentFetcher,
     (page) => page.comments || [],
     PAGE_SIZE
@@ -73,7 +73,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               ref={isLast ? lastElementRef : null}
             >
               <img
-                src={comment.senderProfileImage || "/default-avatar.png"}
+                src={comment.senderProfileImage || "/public/profilepicture.png"}
                 alt={comment.senderUsername || "User"}
                 className="comment-avatar"
               />
@@ -96,3 +96,4 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 };
 
 export default CommentSection;
+// setAvatarUrl("public\\profilepicture.png");

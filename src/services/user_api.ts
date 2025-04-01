@@ -1,7 +1,8 @@
 // src/services/user_api.ts
 import axios from "axios";
 
-const API_URL = "http://localhost:3000";
+// const API_URL = "http://localhost:3000";
+const API_URL = " https://node23.cs.colman.ac.il";
 
 interface RegisterData {
   username: string;

@@ -1,7 +1,8 @@
 import axios from "axios";
 import { PostType } from "../@types/postTypes";
 import { CommentType } from "../@types/postTypes";
-const API_URL = "http://localhost:3000";
+// const API_URL = "http://localhost:3000";
+const API_URL = "https://node23.cs.colman.ac.il";
 
 interface PostData {
   title: string;
@@ -184,29 +185,34 @@ export const isLiked = async (postId: string): Promise<boolean> => {
   }
 };
 
-export const toggleLike = async (postId: string, currentLiked: boolean) => {
-  const accessToken = localStorage.getItem("accessToken");
-  console.log("📤 [CLIENT] Sending toggle-like request:", {
-    postId,
-    currentLiked,
-    token: accessToken,
-  });
+// export const addLike = async (postId: string) => {
+//   const token = localStorage.getItem("accessToken");
+//   const response = await axios.put(
+//     `${API_URL}/Posts/like/${postId}`,
+//     {},
+//     {
+//       headers: {
+//         Authorization: `jwt ${token}`,
+//       },
+//     }
+//   );
+//   return response.data as { liked: boolean; likes: number };
+// };
 
-  const response = await axios.put(
-    `${API_URL}/Posts/toggle-like/${postId}`,
-    { liked: currentLiked },
-    {
-      headers: {
-        Authorization: `jwt ${accessToken}`,
-      },
-    }
-  );
-
-  return response.data as {
-    liked: boolean;
-    likes: number;
-  };
-};
+// export const removeLike = async (postId: string) => {
+//   const token = localStorage.getItem("accessToken");
+//   const response = await axios.put(
+//     `${API_URL}/Posts/unlike/${postId}`,
+//     {},
+//     {
+//       headers: {
+//         Authorization: `jwt ${token}`,
+//       },
+//     }
+//   );
+//   return response.data as { liked: boolean; likes: number };
+// };
+// addLike: הוספת לייק לפוסט
 export const addLike = async (postId: string) => {
   const token = localStorage.getItem("accessToken");
   const response = await axios.put(
@@ -221,6 +227,7 @@ export const addLike = async (postId: string) => {
   return response.data as { liked: boolean; likes: number };
 };
 
+// removeLike: הסרת לייק לפוסט
 export const removeLike = async (postId: string) => {
   const token = localStorage.getItem("accessToken");
   const response = await axios.put(
