@@ -7,7 +7,6 @@ import "./HomePage.css";
 import Post from "../components/Post";
 import CreatePost from "../components/CreatePost";
 import { addPost, fetcher } from "../services/post_api";
-import { PostType } from "../@types/postTypes";
 import { usePaging } from "../useHooks/usePaging"; // ודאי שהנתיב נכון
 
 const PAGE_SIZE = 6;

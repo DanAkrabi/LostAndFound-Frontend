@@ -1,4 +1,3 @@
-
 import { useCallback, useRef } from "react";
 import useSWRInfinite from "swr/infinite";
 
@@ -8,11 +7,13 @@ export const usePaging = (
   extractItems: (page: any) => any[],
   limit = 6
 ) => {
+  console.log(limit);
+
   const getKey = (pageIndex: number, previousPageData: any) => {
-    if (previousPageData && extractItems(previousPageData).length === 0) return null;
+    if (previousPageData && extractItems(previousPageData).length === 0)
+      return null;
     return endpointBuilder(pageIndex + 1);
   };
-
   const { data, size, setSize, isValidating } = useSWRInfinite(getKey, fetcher);
 
   const items = data ? data.flatMap(extractItems) : [];

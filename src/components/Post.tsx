@@ -39,7 +39,7 @@ const Post: React.FC<PostProps> = ({
 
   const [liked, setLiked] = useState<boolean>(hasLiked);
   const [likeCount, setLikeCount] = useState<number>(likes);
-
+  console.log(liked, likeCount);
   // Update avatar URL when the post is loaded
   useEffect(() => {
     if (senderProfileImage && senderProfileImage.trim() !== "") {

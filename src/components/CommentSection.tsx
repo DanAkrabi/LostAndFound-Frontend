@@ -45,7 +45,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       }
     }
   };
-
+  console.log(PAGE_SIZE);
   return (
     <div className="comment-section">
       {/* Input ליצירת תגובה */}

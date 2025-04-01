@@ -8,12 +8,7 @@ import {
   Container,
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
-import {
-  postDetails,
-  addComment,
-  deletePost,
-  updatePost,
-} from "../services/post_api";
+import { postDetails, addComment, deletePost } from "../services/post_api";
 import { PostType, CommentType } from "../@types/postTypes";
 import CommentSection from "../components/CommentSection";
 import LikeButton from "../components/LikeButton";
@@ -34,6 +29,7 @@ const PostDetails: React.FC = () => {
   const [commentCount, setCommentCount] = useState(
     passedState?.numOfComments || 0
   );
+  console.log(commentCount);
 
   useEffect(() => {
     if (id) {
