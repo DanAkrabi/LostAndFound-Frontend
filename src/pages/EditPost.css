@@ -1,0 +1,45 @@
+.modal-box {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px; /* הגבלה על רוחב המודל */
+  margin: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-input {
+  margin-bottom: 16px;
+}
+
+.modal-button {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.image-preview {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px; /* גובה קבוע לתמונה */
+  overflow: hidden;
+  background-color: #f0f0f0; /* צבע רקע לתמונה */
+}
+
+.image-preview img {
+  object-fit: contain; /* שומר על יחס התמונה */
+  max-width: 100%;
+  max-height: 100%;
+}

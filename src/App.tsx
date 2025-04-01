@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import ProfilePage from "./pages/ProfilePage";
 import PostDetails from "./pages/PostDetails";
+import EditPost from "./pages/EditPost";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="home" element={<HomePage />} />
           <Route path="post/:id" element={<PostDetails />} />
           <Route path="profilePage" element={<ProfilePage />} />
+          <Route path="update-post/:id" element={<EditPost />} />
         </Route>
         <Route path="*" element={<div>❌Page Not Found❌</div>} />
       </Routes>

@@ -82,52 +82,6 @@ export const fetcher = async (url: string) => {
   return data;
 };
 
-// export const addPost = async (postData: {
-//   title: string;
-//   content: string;
-//   imagePath?: string; // ודא ששם זה משתמש בקונבנציה אחידה עם השרת, אולי תצטרך לשנות ל imagePath
-//   location?: string;
-//   sender: string;
-// }) => {
-//   try {
-//     console.log("Adding Post - Input Data:", postData);
-
-//     const accessToken = localStorage.getItem("accessToken");
-//     const sender = localStorage.getItem("username") || postData.sender;
-//     const userId = localStorage.getItem("userId") || postData.sender;
-//     if (!accessToken) {
-//       throw new Error("Access token not found. Please log in.");
-//     }
-
-//     // ודא שהמידע שאתה שולח כולל את שדה התמונה עם השם הנכון
-//     const responsePostData = {
-//       ...postData,
-//       sender,
-//       imagePath: postData.imagePath || "", // שינוי ל imagePath אם זה מה שהשרת מצפה לקבל
-//     };
-//     console.log("🚀 Posting to:", `${API_URL}/Posts`);
-//     const response = await axios.post(
-//       `${API_URL}/Posts/create`, // ודא שהנתיב נכון ותואם את השרת
-//       responsePostData,
-//       {
-//         headers: {
-//           Authorization: `jwt ${accessToken}`,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-
-//     console.log("Post created:", response.data);
-//     return response.data as CommentType;
-//   } catch (error) {
-//     console.error("Detailed Error adding post:", {
-//       error,
-//       errorResponse: (error as any).response?.data,
-//       errorStatus: (error as any).response?.status,
-//     });
-//     throw error;
-//   }
-// };
 export const addPost = async (postData: {
   title: string;
   content: string;
@@ -181,19 +135,6 @@ export const addPost = async (postData: {
   }
 };
 
-// export const deletePost = async (postId: string) => {
-//   try {
-//     const response = await axios.delete(`${API_URL}/posts/${postId}`, {
-//       headers: {
-//         Authorization: `jwt ${localStorage.getItem("accessToken")}`,
-//       },
-//     });
-//     return response.data as CommentType;
-//   } catch (error) {
-//     console.error("Error deleting post:", error);
-//     throw error;
-//   }
-// };
 export const deletePost = async (postId: string) => {
   try {
     const response = await axios.delete(`${API_URL}/posts/${postId}`, {
@@ -242,45 +183,6 @@ export const isLiked = async (postId: string): Promise<boolean> => {
     return false;
   }
 };
-
-// export const addLike = async (postId: string) => {
-//   try {
-//     const response = await axios.put(
-//       `${API_URL}/posts/like/${postId}`,
-//       {},
-//       {
-//         headers: {
-//           Authorization: `jwt ${localStorage.getItem("accessToken")}`,
-//         },
-//       }
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error adding like:", error);
-//     throw error;
-//   }
-// };
-// export const toggleLike = async (postId: string, currentLiked: boolean) => {
-//   try {
-//     const response = await axios.put(
-//       `${API_URL}/Posts/toggle-like/${postId}`,
-//       { liked: currentLiked },
-//       {
-//         headers: {
-//           Authorization: `jwt ${localStorage.getItem("accessToken")}`,
-//         },
-//       }
-//     );
-
-//     return response.data as {
-//       liked: boolean; // המצב החדש
-//       likes: number;
-//     };
-//   } catch (error) {
-//     console.error("Error toggling like:", error);
-//     throw error;
-//   }
-// };
 
 export const toggleLike = async (postId: string, currentLiked: boolean) => {
   const accessToken = localStorage.getItem("accessToken");
@@ -362,37 +264,6 @@ export const getComments = async (postId: string) => {
     throw error;
   }
 };
-
-// export const addComment = async ({
-//   comment,
-//   sender,
-//   postId,
-// }: {
-//   comment: string;
-//   sender: string;
-//   postId: string;
-// }) => {
-//   try {
-//     const response = await axios.post(
-//       `${API_URL}/Comments`, // שליחה לנתיב הקיים
-//       {
-//         content: comment, // חשוב: לא comment אלא content
-//         postId,
-//         sender,
-//       },
-//       {
-//         headers: {
-//           Authorization: `jwt ${localStorage.getItem("accessToken")}`,
-//         },
-//       }
-//     );
-
-//     return response.data as CommentType;
-//   } catch (error) {
-//     console.error("Error adding comment:", error);
-//     throw error;
-//   }
-// };
 
 export const addComment = async ({
   comment,
