@@ -45,7 +45,6 @@ export const getPostsBySender = async (
 
     return response.data.posts;
 
-    // ✅ הדפסה לדיבוג
     console.log("📦 Posts received for sender:", username);
     console.log(response.data);
 
@@ -86,7 +85,7 @@ export const fetcher = async (url: string) => {
 export const addPost = async (postData: {
   title: string;
   content: string;
-  imagePath?: string; // ודא ששם זה משתמש בקונבנציה אחידה עם השרת, אולי תצטרך לשנות ל imagePath
+  imagePath?: string;
   location?: string;
   sender: string;
 }) => {
@@ -185,34 +184,6 @@ export const isLiked = async (postId: string): Promise<boolean> => {
   }
 };
 
-// export const addLike = async (postId: string) => {
-//   const token = localStorage.getItem("accessToken");
-//   const response = await axios.put(
-//     `${API_URL}/Posts/like/${postId}`,
-//     {},
-//     {
-//       headers: {
-//         Authorization: `jwt ${token}`,
-//       },
-//     }
-//   );
-//   return response.data as { liked: boolean; likes: number };
-// };
-
-// export const removeLike = async (postId: string) => {
-//   const token = localStorage.getItem("accessToken");
-//   const response = await axios.put(
-//     `${API_URL}/Posts/unlike/${postId}`,
-//     {},
-//     {
-//       headers: {
-//         Authorization: `jwt ${token}`,
-//       },
-//     }
-//   );
-//   return response.data as { liked: boolean; likes: number };
-// };
-// addLike: הוספת לייק לפוסט
 export const addLike = async (postId: string) => {
   const token = localStorage.getItem("accessToken");
   const response = await axios.put(

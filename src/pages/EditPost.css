@@ -3,7 +3,7 @@
   padding: 20px;
   border-radius: 8px;
   width: 100%;
-  max-width: 500px; /* הגבלה על רוחב המודל */
+  max-width: 500px;
   margin: auto;
   top: 50%;
   left: 50%;
@@ -11,6 +11,7 @@
   position: absolute;
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
 .modal-title {
@@ -33,13 +34,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 200px; /* גובה קבוע לתמונה */
+  height: 200px;
   overflow: hidden;
-  background-color: #f0f0f0; /* צבע רקע לתמונה */
+  background-color: #f0f0f0;
 }
 
 .image-preview img {
-  object-fit: contain; /* שומר על יחס התמונה */
+  object-fit: contain;
   max-width: 100%;
   max-height: 100%;
 }

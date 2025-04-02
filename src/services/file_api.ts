@@ -83,30 +83,3 @@ export const uploadImage = async (
     throw err;
   }
 };
-
-// import axios from "axios";
-
-// const API_ROOT = "http://localhost:3000";
-
-// export const uploadImage = async (imageFile: File): Promise<string> => {
-//   const formData = new FormData();
-//   formData.append("file", imageFile);
-
-//   try {
-//     const { data } = await axios.post<{ url: string }>(
-//       `${API_ROOT}/file/upload`,
-//       formData,
-//       {
-//         headers: {
-//           "Content-Type": "multipart/form-data",
-//           Authorization: `jwt ${localStorage.getItem("accessToken") || ""}`,
-//         },
-//       }
-//     );
-
-//     return data.url;
-//   } catch (err) {
-//     console.error("Image upload failed:", err);
-//     throw err;
-//   }
-// };

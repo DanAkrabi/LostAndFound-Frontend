@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Container, Typography, Button, Box, Fab } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Button,
+  Box,
+  Fab,
+  CircularProgress,
+} from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
@@ -7,9 +14,10 @@ import "./HomePage.css";
 import Post from "../components/Post";
 import CreatePost from "../components/CreatePost";
 import { addPost, fetcher } from "../services/post_api";
-import { usePaging } from "../useHooks/usePaging"; // ודאי שהנתיב נכון
+import { usePaging } from "../useHooks/usePaging";
 
 const PAGE_SIZE = 6;
+// const API_URL = "http://localhost:3000";
 const API_URL = "https://node23.cs.colman.ac.il";
 
 const HomePage: React.FC = () => {
@@ -23,8 +31,11 @@ const HomePage: React.FC = () => {
     localStorage.setItem("username", stored);
   }, []);
 
-  // שימוש ב־usePaging במקום useSWRInfinite
-  const { items: fetchedPosts, lastElementRef } = usePaging(
+  const {
+    items: fetchedPosts,
+    lastElementRef,
+    isValidating: isLoading,
+  } = usePaging(
     (pageIndex) => `${API_URL}/Posts?page=${pageIndex}&limit=${PAGE_SIZE}`,
     fetcher,
     (page) => page.posts
@@ -85,33 +96,36 @@ const HomePage: React.FC = () => {
             className="homepage-posts"
             sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 2 }}
           >
-            {fetchedPosts.length > 0 ? (
-              fetchedPosts.map((post, idx) => {
-                console.log(
-                  `📌 Post ID: ${post._id}, HasLiked: ${post.hasLiked}`
-                );
-                const isLastPost = idx === fetchedPosts.length - 1;
-                return (
-                  <div key={post._id} ref={isLastPost ? lastElementRef : null}>
-                    <Post
-                      {...post}
-                      imagePath={post.imagePath || ""}
-                      hasLiked={post.hasLiked ?? false}
-                      onClick={() =>
-                        navigate(`/post/${post._id}`, {
-                          state: {
-                            postId: post._id,
-                            hasLiked: post.hasLiked,
-                            likes: post.likes,
-                            numOfComments: post.numOfComments,
-                          },
-                        })
-                      }
-                    />
-                  </div>
-                );
-              })
-            ) : (
+            {fetchedPosts.map((post, idx) => {
+              const isLastPost = idx === fetchedPosts.length - 1;
+              return (
+                <div key={post._id} ref={isLastPost ? lastElementRef : null}>
+                  <Post
+                    {...post}
+                    imagePath={post.imagePath || ""}
+                    hasLiked={post.hasLiked ?? false}
+                    senderProfileImage={post.senderProfileImage}
+                    onClick={() =>
+                      navigate(`/post/${post._id}`, {
+                        state: {
+                          postId: post._id,
+                          hasLiked: post.hasLiked,
+                          likes: post.likes,
+                          numOfComments: post.numOfComments,
+                        },
+                      })
+                    }
+                  />
+                </div>
+              );
+            })}
+            {isLoading && (
+              <CircularProgress
+                color="secondary"
+                style={{ alignSelf: "center", margin: "20px auto" }}
+              />
+            )}
+            {fetchedPosts.length === 0 && !isLoading && (
               <Typography>No posts found.</Typography>
             )}
           </Box>

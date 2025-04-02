@@ -1,13 +1,5 @@
 // src/components/AppMenu.tsx
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  IconButton,
-  Avatar,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Toolbar, Typography, Button, Avatar } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useNavigate } from "react-router-dom";
 
@@ -30,14 +22,6 @@ const AppMenu = () => {
       sx={{ backgroundColor: "#4a752c", color: "white" }}
     >
       <Toolbar>
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          onClick={() => handleNavigate("/home")}
-        >
-          <MenuIcon />
-        </IconButton>
         <Typography
           variant="h6"
           component="div"

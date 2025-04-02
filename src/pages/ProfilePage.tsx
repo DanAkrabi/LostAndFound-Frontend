@@ -25,9 +25,7 @@ import { usePaging } from "../useHooks/usePaging";
 
 const PAGE_SIZE = 6;
 // const API_URL = "http://localhost:3000";
-
-const API_URL = " https://node23.cs.colman.ac.il";
-
+const API_URL = "https://node23.cs.colman.ac.il";
 const ProfilePage: React.FC = () => {
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -120,7 +118,6 @@ const ProfilePage: React.FC = () => {
         profileImage: string;
       };
 
-      // עדכון בלוקל סטורג'
       if (updates.username) {
         localStorage.setItem("username", updatedUser.username);
         setUsername(updatedUser.username);
@@ -134,7 +131,6 @@ const ProfilePage: React.FC = () => {
         setProfileImage(updatedUser.profileImage);
       }
 
-      // סגירת הדיאלוג וריענון רשימת הפוסטים
       setEditDialogOpen(false);
       setRefreshKey((prev) => prev + 1);
 
@@ -186,7 +182,8 @@ const ProfilePage: React.FC = () => {
           </Typography>
         </Box>
 
-        {isValidating && userPosts.length === 0 ? (
+        {/* === הצגת פוסטים או טוען או הודעה === */}
+        {userPosts.length === 0 && isValidating ? (
           <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
             <CircularProgress />
           </Box>
@@ -213,6 +210,13 @@ const ProfilePage: React.FC = () => {
                 );
               })}
             </Box>
+
+            {/* === ספינר טעינה בתחתית === */}
+            {isValidating && (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <CircularProgress size={24} />
+              </Box>
+            )}
           </>
         ) : (
           <Typography variant="body1" sx={{ mt: 4 }}>

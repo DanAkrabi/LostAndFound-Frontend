@@ -29,7 +29,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     (page) => page.comments || [],
     PAGE_SIZE
   );
-
+  // https://node23.cs.colman.ac.il
+  // http://localhost:3000
   const comments = [...manualComments, ...fetchedComments];
 
   const handleSubmit = async (e: React.FormEvent) => {

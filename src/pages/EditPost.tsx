@@ -39,23 +39,6 @@ const EditPost: React.FC = () => {
     }
   };
 
-  // const handleUpdatePost = async () => {
-  //   if (id) {
-  //     try {
-  //       const updatedPost = {
-  //         title,
-  //         content,
-  //         imagePath,
-  //         sender: post?.sender || "defaultSender", // Replace "defaultSender" with appropriate logic
-  //       };
-
-  //       await updatePost(id, updatedPost);
-  //       navigate(`/post/${id}`);
-  //     } catch (error) {
-  //       console.error("❌ Error updating post:", error);
-  //     }
-  //   }
-  // };
   const handleUpdatePost = async () => {
     if (id) {
       try {
